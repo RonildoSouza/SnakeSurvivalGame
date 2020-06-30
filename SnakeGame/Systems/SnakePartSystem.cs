@@ -9,13 +9,21 @@ namespace SnakeGame.Systems
     {
         public void Update()
         {
-            SceneMatchEntitiesIteration(entity =>
-            {
-                var snakePartComponent = entity.GetComponent<SnakePartComponet>();
-                var position = entity.Parent.Transform.Position - snakePartComponent.OffsetPosition;
+            var snakePartEntities = Scene.GetEntities(_ => _.Active && _.UniqueId.StartsWith("snakePart"));
 
-                entity.SetPosition(position);
-            });
+            foreach (var snakePartEntity in snakePartEntities)
+            {
+                var snakePartComponentParent = snakePartEntity.Parent.GetComponent<SnakePartComponet>();
+
+                if (snakePartEntity.Transform.Position != snakePartComponentParent.LastPosition)
+                {
+                    var snakePartComponentSnakePart = snakePartEntity.GetComponent<SnakePartComponet>();
+                    var position = snakePartComponentParent.LastPosition;// - snakePartComponentSnakePart.OffsetPosition;
+
+                    snakePartComponentSnakePart.LastPosition = snakePartEntity.Transform.Position;
+                    snakePartEntity.SetPosition(position);
+                }
+            }
         }
     }
 }
