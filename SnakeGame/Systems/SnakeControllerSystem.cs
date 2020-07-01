@@ -15,14 +15,22 @@ namespace SnakeGame.Systems
     public sealed class SnakeControllerSystem : MonoGame.Helper.ECS.System, IInitializable, IUpdatable
     {
         TimeSpan _sleepTime = TimeSpan.Zero;
-        KeyboardState _oldKS = new KeyboardState();
-        bool _keyDownPress;
+        KeyboardState _oldKeyboardState = new KeyboardState();
+        Vector2 direction = new Vector2(25f, 0f);
 
         public void Initialize()
         {
-            var snakeHeadEntity = CreateSnakePart(true);
+            var snakeHeadEntity = CreateSnakeHead();
             var snakePartEntity1 = CreateSnakePart();
             var snakePartEntity2 = CreateSnakePart();
+
+            var snakePartEntity3 = CreateSnakePart();
+            var snakePartEntity4 = CreateSnakePart();
+            var snakePartEntity5 = CreateSnakePart();
+
+            snakePartEntity4.AddChild(snakePartEntity5);
+            snakePartEntity3.AddChild(snakePartEntity4);
+            snakePartEntity2.AddChild(snakePartEntity3);
 
             snakePartEntity1.AddChild(snakePartEntity2);
             snakeHeadEntity.AddChild(snakePartEntity1);
@@ -30,56 +38,66 @@ namespace SnakeGame.Systems
             InitializeSnakePartPosition();
         }
 
-
-
         public void Update()
         {
             var snakeHeadEntity = Scene.GetEntity("snakeHead");
             var snakePartComponentSnakeHead = snakeHeadEntity.GetComponent<SnakePartComponet>();
-            var ks = Keyboard.GetState();
+            var keyboardState = Keyboard.GetState();
 
+            if (keyboardState.IsKeyDown(Keys.Left) && !_oldKeyboardState.IsKeyDown(Keys.Right))
+            {
+                direction = new Vector2(-25f, 0f);
+                _oldKeyboardState = keyboardState;
+            }
 
-            if (ks.IsKeyDown(Keys.Down) && _oldKS.IsKeyUp(Keys.Down))
-                _keyDownPress = true;
+            if (keyboardState.IsKeyDown(Keys.Up) && !_oldKeyboardState.IsKeyDown(Keys.Down))
+            {
+                direction = new Vector2(0f, -25f);
+                _oldKeyboardState = keyboardState;
+            }
 
-            _oldKS = ks;
+            if (keyboardState.IsKeyDown(Keys.Right) && !_oldKeyboardState.IsKeyDown(Keys.Left))
+            {
+                direction = new Vector2(25f, 0f);
+                _oldKeyboardState = keyboardState;
+            }
 
+            if (keyboardState.IsKeyDown(Keys.Down) && !_oldKeyboardState.IsKeyDown(Keys.Up))
+            {
+                direction = new Vector2(0f, 25f);
+                _oldKeyboardState = keyboardState;
+            }
 
+            //System.Diagnostics.Debug.WriteLine($"{_oldKS.GetPressedKeys().LastOrDefault()}");
 
             _sleepTime += Scene.GameTime.ElapsedGameTime;
-            if (_sleepTime >= TimeSpan.FromSeconds(1))
+            if (_sleepTime >= TimeSpan.FromSeconds(0.5))
             {
                 snakePartComponentSnakeHead.LastPosition = snakeHeadEntity.Transform.Position;
 
-                if (_keyDownPress)
-                {
-                    var posY = snakeHeadEntity.Transform.Position.Y + 25f;
-                    snakeHeadEntity.SetPosition(snakeHeadEntity.Transform.Position.X, posY);
-                }
-                else
-                {
-                    var posX = snakeHeadEntity.Transform.Position.X + 25f;
-                    snakeHeadEntity.SetPosition(posX, snakeHeadEntity.Transform.Position.Y);
-                }
-
+                var position = snakeHeadEntity.Transform.Position + direction;
+                snakeHeadEntity.SetPosition(position);
 
                 _sleepTime = TimeSpan.Zero;
             }
         }
 
-        Entity CreateSnakePart(bool isHead = false)
+        Entity CreateSnakeHead()
         {
             var snakeTexture = new Texture2D(Scene.GameCore.GraphicsDevice, 1, 1);
             snakeTexture.SetData(new Color[] { Color.Red });
 
-            if (isHead)
-            {
-                var startPosition = new Vector2(100f/*Scene.ScreenWidth / 2f*/, 50f/*Scene.ScreenHeight / 2f*/);
+            var startPosition = new Vector2(100f/*Scene.ScreenWidth / 2f*/, 50f/*Scene.ScreenHeight / 2f*/);
 
-                return Scene.CreateEntity("snakeHead").SetPosition(startPosition)
+            return Scene.CreateEntity("snakeHead").SetPosition(startPosition)
                 .AddComponent(new SpriteComponent(snakeTexture, sourceRectangle: new Rectangle(0, 0, 25, 25)))
                 .AddComponent(new SnakePartComponet { LastPosition = startPosition - new Vector2(25f, 0f) });
-            }
+        }
+
+        Entity CreateSnakePart()
+        {
+            var snakeTexture = new Texture2D(Scene.GameCore.GraphicsDevice, 1, 1);
+            snakeTexture.SetData(new Color[] { Color.Red });
 
             var nextIndexSnakePart = Scene.GetEntities(_ => _.Active && _.UniqueId.StartsWith("snakePart")).Count;
 

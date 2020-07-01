@@ -7,8 +7,8 @@ namespace SnakeGame.Scenes
     {
         public override void Initialize()
         {
-            AddSystem<SnakePartSystem>();
             AddSystem<SnakeControllerSystem>();
+            AddSystem<SnakePartSystem>();
 
             base.Initialize();
         }
