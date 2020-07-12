@@ -18,7 +18,7 @@ namespace SnakeGame.Systems
                 if (snakePartEntity.Transform.Position != snakePartComponentParent.LastPosition)
                 {
                     var snakePartComponentSnakePart = snakePartEntity.GetComponent<SnakePartComponet>();
-                    var position = snakePartComponentParent.LastPosition;// - snakePartComponentSnakePart.OffsetPosition;
+                    var position = snakePartComponentParent.LastPosition;
 
                     snakePartComponentSnakePart.LastPosition = snakePartEntity.Transform.Position;
                     snakePartEntity.SetPosition(position);

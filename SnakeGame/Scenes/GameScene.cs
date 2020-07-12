@@ -7,6 +7,10 @@ namespace SnakeGame.Scenes
     {
         public override void Initialize()
         {
+            SetTitle("Snake Black Power");
+
+            AddSystem<FruitControllerSystem>();
+            AddSystem<SnakeInitializeSystem>();
             AddSystem<SnakeControllerSystem>();
             AddSystem<SnakePartSystem>();
 

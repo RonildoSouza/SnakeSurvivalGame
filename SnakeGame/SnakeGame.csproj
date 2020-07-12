@@ -47,6 +47,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scenes\GameScene.cs" />
+    <Compile Include="SnakeHelper.cs" />
+    <Compile Include="Systems\FruitControllerSystem.cs" />
+    <Compile Include="Systems\SnakeInitializeSystem.cs" />
     <Compile Include="Systems\SnakeControllerSystem.cs" />
     <Compile Include="Systems\SnakePartSystem.cs" />
   </ItemGroup>
