@@ -9,7 +9,7 @@ namespace SnakeGame.Systems
     {
         public void Update()
         {
-            var snakePartEntities = Scene.GetEntities(_ => _.Active && _.UniqueId.StartsWith("snakePart"));
+            var snakePartEntities = Scene.GetEntities(_ => Matches(_) && _.UniqueId.StartsWith("snakePart"));
 
             foreach (var snakePartEntity in snakePartEntities)
             {

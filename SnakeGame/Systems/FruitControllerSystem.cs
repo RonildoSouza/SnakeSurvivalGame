@@ -1,12 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using MonoGame.Helper.Attributes;
 using MonoGame.Helper.ECS;
 using MonoGame.Helper.ECS.Components.Drawables;
 using MonoGame.Helper.ECS.Systems;
 using SnakeGame.Components;
 using System;
+using System.Linq;
 
 namespace SnakeGame.Systems
 {
@@ -17,10 +17,14 @@ namespace SnakeGame.Systems
         readonly Rectangle _fruitSize = new Rectangle(0, 0, 24, 24);
         Vector2 _fruitHalf;
         Entity _fruitEntity;
+        Texture2D _snakeTexture;
 
         public void Initialize()
         {
             _fruitHalf = _fruitSize.Size.ToVector2() / 2f;
+
+            _snakeTexture = new Texture2D(Scene.GameCore.GraphicsDevice, 1, 1);
+            _snakeTexture.SetData(new Color[] { Color.Black });
 
             var fruitTexture = new Texture2D(Scene.GameCore.GraphicsDevice, 1, 1);
             fruitTexture.SetData(new Color[] { Color.Red });
@@ -34,47 +38,50 @@ namespace SnakeGame.Systems
                 .AddComponent(new SpriteComponent(fruitTexture, sourceRectangle: _fruitSize));
         }
 
-        KeyboardState oldKS = new KeyboardState();
         public void Update()
         {
-            //var snakeHeadEntity = Scene.GetEntity("snakeHead");
+            var snakeHeadEntity = Scene.GetEntity(SnakeHelper.SnakeHeadId);
 
-            var ks = Keyboard.GetState();
-
-            if (ks.IsKeyDown(Keys.Space) && oldKS.IsKeyUp(Keys.Space))
+            // Did the snake eat fruit?
+            if (Vector2.Distance(snakeHeadEntity.Transform.Position, _fruitEntity.Transform.Position) <= 12)
             {
+                // Update fruit position
                 _fruitEntity.SetPosition(GetNewPosition());
-            }
 
-            oldKS = ks;
+                // Get the last snake part
+                var lastSnakePartEntity = Scene
+                    .GetEntities(_ => Matches(_) && _.UniqueId.StartsWith(SnakeHelper.SnakePartIdPrefix))
+                    .FirstOrDefault(_ => !_.Children.Any());
+
+                // Add new snake part as child of the last snake part
+                var newSnakePartEntity = SnakeHelper.CreateSnakePart(Scene, _snakeTexture);
+                lastSnakePartEntity.AddChild(newSnakePartEntity);
+            }
         }
 
         Vector2 GetNewPosition()
         {
-            var x = GetX();
-            var y = GetY();
+            return new Vector2(GetX(), GetY());
 
-            return new Vector2(x, y);
-        }
+            int GetX()
+            {
+                var x = _random.Value.Next((int)_fruitHalf.X, Scene.ScreenWidth - (int)_fruitHalf.X);
 
-        int GetX()
-        {
-            var x = _random.Value.Next((int)_fruitHalf.X, Scene.ScreenWidth - (int)_fruitHalf.X);
+                if (x % _fruitSize.Width != 0)
+                    x = GetX();
 
-            if (x % _fruitSize.Width != 0)
-                x = GetX();
+                return x;
+            }
 
-            return x;
-        }
+            int GetY()
+            {
+                var y = _random.Value.Next((int)_fruitHalf.Y, Scene.ScreenHeight - (int)_fruitHalf.Y);
 
-        int GetY()
-        {
-            var y = _random.Value.Next((int)_fruitHalf.Y, Scene.ScreenHeight - (int)_fruitHalf.Y);
+                if (y % _fruitSize.Height != 0)
+                    y = GetY();
 
-            if (y % _fruitSize.Height != 0)
-                y = GetY();
-
-            return y;
+                return y;
+            }
         }
     }
 }

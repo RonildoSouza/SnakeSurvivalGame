@@ -17,7 +17,7 @@ namespace SnakeGame.Systems
 
         public void Update()
         {
-            var snakeHeadEntity = Scene.GetEntity("snakeHead");
+            var snakeHeadEntity = Scene.GetEntity(SnakeHelper.SnakeHeadId);
             var snakePartComponentSnakeHead = snakeHeadEntity.GetComponent<SnakePartComponet>();
             var keyboardState = Keyboard.GetState();
 
