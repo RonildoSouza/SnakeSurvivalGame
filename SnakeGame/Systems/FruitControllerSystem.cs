@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Helper.Attributes;
 using MonoGame.Helper.ECS;
 using MonoGame.Helper.ECS.Components.Drawables;
@@ -10,24 +9,19 @@ using System.Linq;
 
 namespace SnakeGame.Systems
 {
-    [RequiredComponent(typeof(SnakePartComponet))]
+    [RequiredComponent(typeof(SnakePartComponent))]
     public sealed class FruitControllerSystem : MonoGame.Helper.ECS.System, IInitializable, IUpdatable
     {
         readonly Lazy<Random> _random = new Lazy<Random>();
-        readonly Rectangle _fruitSize = new Rectangle(0, 0, 24, 24);
+        Rectangle _fruitSize;
         Vector2 _fruitHalf;
         Entity _fruitEntity;
-        Texture2D _snakeTexture;
 
         public void Initialize()
         {
             _fruitHalf = _fruitSize.Size.ToVector2() / 2f;
 
-            _snakeTexture = new Texture2D(Scene.GameCore.GraphicsDevice, 1, 1);
-            _snakeTexture.SetData(new Color[] { Color.Black });
-
-            var fruitTexture = new Texture2D(Scene.GameCore.GraphicsDevice, 1, 1);
-            fruitTexture.SetData(new Color[] { Color.Red });
+            _fruitSize = SnakeHelper.GetSnakeTextureSource(SnakeTexture.Fruit);
 
             var startPosition = new Vector2(
                 Scene.ScreenWidth * 0.6f - _fruitHalf.X,
@@ -35,7 +29,7 @@ namespace SnakeGame.Systems
 
             _fruitEntity = Scene.CreateEntity("fruit")
                 .SetPosition(startPosition)
-                .AddComponent(new SpriteComponent(fruitTexture, sourceRectangle: _fruitSize));
+                .AddComponent(new SpriteComponent(SnakeHelper.GameTextures, sourceRectangle: _fruitSize));
         }
 
         public void Update()
@@ -50,11 +44,11 @@ namespace SnakeGame.Systems
 
                 // Get the last snake part
                 var lastSnakePartEntity = Scene
-                    .GetEntities(_ => Matches(_) && _.UniqueId.StartsWith(SnakeHelper.SnakePartIdPrefix))
-                    .FirstOrDefault(_ => !_.Children.Any());
+                    .GetEntities(_ => MatchComponents(_) && _.UniqueId.StartsWith(SnakeHelper.SnakePartIdPrefix))
+                    .LastOrDefault(_ => !_.Children.Any());
 
                 // Add new snake part as child of the last snake part
-                var newSnakePartEntity = SnakeHelper.CreateSnakePart(Scene, _snakeTexture);
+                var newSnakePartEntity = SnakeHelper.CreateSnakePart(Scene);
                 lastSnakePartEntity.AddChild(newSnakePartEntity);
             }
         }

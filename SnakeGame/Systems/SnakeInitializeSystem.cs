@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Helper.ECS;
 using MonoGame.Helper.ECS.Components.Drawables;
 using MonoGame.Helper.ECS.Systems;
@@ -11,39 +10,45 @@ namespace SnakeGame.Systems
     {
         public void Initialize()
         {
-            var snakeTexture = new Texture2D(Scene.GameCore.GraphicsDevice, 1, 1);
-            snakeTexture.SetData(new Color[] { Color.Black });
-
-            var snakeHeadEntity = CreateSnakeHead(snakeTexture);
-            var snakePartEntity1 = SnakeHelper.CreateSnakePart(Scene, snakeTexture);
-            var snakePartEntity2 = SnakeHelper.CreateSnakePart(Scene, snakeTexture);
+            var snakeHeadEntity = CreateSnakeHead();
+            var snakePartEntity1 = SnakeHelper.CreateSnakePart(Scene);
+            var snakePartEntity2 = SnakeHelper.CreateSnakePart(Scene);
+            var snakePartEntity3 = SnakeHelper.CreateSnakePart(Scene);
 
 #if DEBUG
-            var snakePartEntity3 = SnakeHelper.CreateSnakePart(Scene, snakeTexture);
-            var snakePartEntity4 = SnakeHelper.CreateSnakePart(Scene, snakeTexture);
-            var snakePartEntity5 = SnakeHelper.CreateSnakePart(Scene, snakeTexture);
+            var snakePartEntity4 = SnakeHelper.CreateSnakePart(Scene);
+            var snakePartEntity5 = SnakeHelper.CreateSnakePart(Scene);
+            var snakePartEntity6 = SnakeHelper.CreateSnakePart(Scene);
+            var snakePartEntity7 = SnakeHelper.CreateSnakePart(Scene);
+            var snakePartEntity8 = SnakeHelper.CreateSnakePart(Scene);
+            var snakePartEntity9 = SnakeHelper.CreateSnakePart(Scene);
 
+            snakePartEntity8.AddChild(snakePartEntity9);
+            snakePartEntity7.AddChild(snakePartEntity8);
+            snakePartEntity6.AddChild(snakePartEntity7);
+            snakePartEntity5.AddChild(snakePartEntity6);
             snakePartEntity4.AddChild(snakePartEntity5);
             snakePartEntity3.AddChild(snakePartEntity4);
-            snakePartEntity2.AddChild(snakePartEntity3);
 #endif
 
+            snakePartEntity2.AddChild(snakePartEntity3);
             snakePartEntity1.AddChild(snakePartEntity2);
             snakeHeadEntity.AddChild(snakePartEntity1);
 
             InitializeSnakePartPosition();
         }
 
-        Entity CreateSnakeHead(Texture2D snakeTexture)
+        Entity CreateSnakeHead()
         {
-            var snakeHeadSize = new Rectangle(0, 0, 24, 24);
+            var snakeHeadSource = SnakeHelper.GetSnakeTextureSource(SnakeTexture.HeadRight);
             var startPosition = new Vector2(
-                Scene.ScreenWidth / 2f - snakeHeadSize.Width / 2f,
-                Scene.ScreenHeight / 2f - snakeHeadSize.Height / 2f);
+                Scene.ScreenWidth / 2f - snakeHeadSource.Width / 2f,
+                Scene.ScreenHeight / 2f - snakeHeadSource.Height / 2f);
 
-            return Scene.CreateEntity(SnakeHelper.SnakeHeadId).SetPosition(startPosition)
-                .AddComponent(new SpriteComponent(snakeTexture, sourceRectangle: snakeHeadSize))
-                .AddComponent(new SnakePartComponet { LastPosition = startPosition - new Vector2(SnakeHelper.SnakePixel, 0f) });
+            return Scene.CreateEntity(SnakeHelper.SnakeHeadId)
+                .SetPosition(startPosition)
+                .AddComponent(new SpriteComponent(SnakeHelper.GameTextures, sourceRectangle: snakeHeadSource))
+                .AddComponent(new SnakePartComponent(startPosition - new Vector2(SnakeHelper.SnakePixel, 0f), SnakeHelper.RightDirection));
         }
 
         void InitializeSnakePartPosition()
@@ -52,8 +57,8 @@ namespace SnakeGame.Systems
 
             foreach (var snakePartEntity in snakePartEntities)
             {
-                var snakePartComponentParent = snakePartEntity.Parent.GetComponent<SnakePartComponet>();
-                var snakePartComponentSnakePart = snakePartEntity.GetComponent<SnakePartComponet>();
+                var snakePartComponentParent = snakePartEntity.Parent.GetComponent<SnakePartComponent>();
+                var snakePartComponentSnakePart = snakePartEntity.GetComponent<SnakePartComponent>();
                 var position = snakePartComponentParent.LastPosition;
 
                 snakePartComponentSnakePart.LastPosition = position - new Vector2(SnakeHelper.SnakePixel, 0f);

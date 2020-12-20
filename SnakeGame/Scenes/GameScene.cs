@@ -9,10 +9,11 @@ namespace SnakeGame.Scenes
         {
             SetTitle("Snake Black Power");
 
-            AddSystem<FruitControllerSystem>();
+            AddSystem<GameInitializeSystem>();
             AddSystem<SnakeInitializeSystem>();
-            AddSystem<SnakeControllerSystem>();
-            AddSystem<SnakePartSystem>();
+            //AddSystem<FruitControllerSystem>();
+            AddSystem<SnakeHeadControllerSystem>();
+            AddSystem<SnakePartControllerSystem>();
 
             base.Initialize();
         }
