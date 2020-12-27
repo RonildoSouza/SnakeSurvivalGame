@@ -13,7 +13,7 @@ namespace SnakeGame.Scenes
             AddSystem<SnakeInitializeSystem>();
             //AddSystem<FruitControllerSystem>();
             AddSystem<SnakeHeadControllerSystem>();
-            AddSystem<SnakePartControllerSystem>();
+            //AddSystem<SnakePartControllerSystem>();
 
             base.Initialize();
         }

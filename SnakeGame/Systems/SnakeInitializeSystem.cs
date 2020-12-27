@@ -16,19 +16,19 @@ namespace SnakeGame.Systems
             var snakePartEntity3 = SnakeHelper.CreateSnakePart(Scene);
 
 #if DEBUG
-            var snakePartEntity4 = SnakeHelper.CreateSnakePart(Scene);
-            var snakePartEntity5 = SnakeHelper.CreateSnakePart(Scene);
-            var snakePartEntity6 = SnakeHelper.CreateSnakePart(Scene);
-            var snakePartEntity7 = SnakeHelper.CreateSnakePart(Scene);
-            var snakePartEntity8 = SnakeHelper.CreateSnakePart(Scene);
-            var snakePartEntity9 = SnakeHelper.CreateSnakePart(Scene);
+            //var snakePartEntity4 = SnakeHelper.CreateSnakePart(Scene);
+            //var snakePartEntity5 = SnakeHelper.CreateSnakePart(Scene);
+            //var snakePartEntity6 = SnakeHelper.CreateSnakePart(Scene);
+            //var snakePartEntity7 = SnakeHelper.CreateSnakePart(Scene);
+            //var snakePartEntity8 = SnakeHelper.CreateSnakePart(Scene);
+            //var snakePartEntity9 = SnakeHelper.CreateSnakePart(Scene);
 
-            snakePartEntity8.AddChild(snakePartEntity9);
-            snakePartEntity7.AddChild(snakePartEntity8);
-            snakePartEntity6.AddChild(snakePartEntity7);
-            snakePartEntity5.AddChild(snakePartEntity6);
-            snakePartEntity4.AddChild(snakePartEntity5);
-            snakePartEntity3.AddChild(snakePartEntity4);
+            //snakePartEntity8.AddChild(snakePartEntity9);
+            //snakePartEntity7.AddChild(snakePartEntity8);
+            //snakePartEntity6.AddChild(snakePartEntity7);
+            //snakePartEntity5.AddChild(snakePartEntity6);
+            //snakePartEntity4.AddChild(snakePartEntity5);
+            //snakePartEntity3.AddChild(snakePartEntity4);
 #endif
 
             snakePartEntity2.AddChild(snakePartEntity3);
