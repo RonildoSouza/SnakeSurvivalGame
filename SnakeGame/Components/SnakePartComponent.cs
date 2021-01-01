@@ -3,7 +3,7 @@ using MonoGame.Helper.ECS.Components;
 
 namespace SnakeGame.Components
 {
-    public class SnakePartComponent : IComponent
+    public sealed class SnakePartComponent : IComponent
     {
         public SnakePartComponent(Vector2 lastPosition, Vector2 newDirection)
         {

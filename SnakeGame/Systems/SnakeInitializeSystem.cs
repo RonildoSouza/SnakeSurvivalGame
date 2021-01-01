@@ -3,6 +3,7 @@ using MonoGame.Helper.ECS;
 using MonoGame.Helper.ECS.Components.Drawables;
 using MonoGame.Helper.ECS.Systems;
 using SnakeGame.Components;
+using System.Collections.Generic;
 
 namespace SnakeGame.Systems
 {
@@ -11,49 +12,34 @@ namespace SnakeGame.Systems
         public void Initialize()
         {
             var snakeHeadEntity = CreateSnakeHead();
-            var snakePartEntity1 = SnakeHelper.CreateSnakePart(Scene);
-            var snakePartEntity2 = SnakeHelper.CreateSnakePart(Scene);
-            var snakePartEntity3 = SnakeHelper.CreateSnakePart(Scene);
+            var snakePartEntities = new List<Entity> { snakeHeadEntity };
 
-#if DEBUG
-            //var snakePartEntity4 = SnakeHelper.CreateSnakePart(Scene);
-            //var snakePartEntity5 = SnakeHelper.CreateSnakePart(Scene);
-            //var snakePartEntity6 = SnakeHelper.CreateSnakePart(Scene);
-            //var snakePartEntity7 = SnakeHelper.CreateSnakePart(Scene);
-            //var snakePartEntity8 = SnakeHelper.CreateSnakePart(Scene);
-            //var snakePartEntity9 = SnakeHelper.CreateSnakePart(Scene);
+            for (int i = 0; i < 2; i++)
+            {
+                var snakePartEntity = SnakeGameHelper.CreateSnakePart(Scene);
 
-            //snakePartEntity8.AddChild(snakePartEntity9);
-            //snakePartEntity7.AddChild(snakePartEntity8);
-            //snakePartEntity6.AddChild(snakePartEntity7);
-            //snakePartEntity5.AddChild(snakePartEntity6);
-            //snakePartEntity4.AddChild(snakePartEntity5);
-            //snakePartEntity3.AddChild(snakePartEntity4);
-#endif
-
-            snakePartEntity2.AddChild(snakePartEntity3);
-            snakePartEntity1.AddChild(snakePartEntity2);
-            snakeHeadEntity.AddChild(snakePartEntity1);
+                snakePartEntities[i].AddChild(snakePartEntity);
+                snakePartEntities.Add(snakePartEntity);
+            }
 
             InitializeSnakePartPosition();
         }
 
         Entity CreateSnakeHead()
         {
-            var snakeHeadSource = SnakeHelper.GetSnakeTextureSource(SnakeTexture.HeadRight);
-            var startPosition = new Vector2(
-                Scene.ScreenWidth / 2f - snakeHeadSource.Width / 2f,
-                Scene.ScreenHeight / 2f - snakeHeadSource.Height / 2f);
+            var snakeHeadSource = SnakeGameHelper.GetSnakeTextureSource(SnakeTexture.Head);
+            var startPosition = new Vector2(SnakeGameHelper.PixelSize * 8.5f, SnakeGameHelper.PixelSize * 12.5f);
+            var lastPosition = startPosition - new Vector2(SnakeGameHelper.PixelSize, 0f);
 
-            return Scene.CreateEntity(SnakeHelper.SnakeHeadId)
+            return Scene.CreateEntity(SnakeGameHelper.SnakeHeadId)
                 .SetPosition(startPosition)
-                .AddComponent(new SpriteComponent(SnakeHelper.GameTextures, sourceRectangle: snakeHeadSource))
-                .AddComponent(new SnakePartComponent(startPosition - new Vector2(SnakeHelper.SnakePixel, 0f), SnakeHelper.RightDirection));
+                .AddComponent(new SpriteComponent(SnakeGameHelper.SnakeGameTextures, sourceRectangle: snakeHeadSource))
+                .AddComponent(new SnakePartComponent(lastPosition, SnakeGameHelper.RightDirection));
         }
 
         void InitializeSnakePartPosition()
         {
-            var snakePartEntities = Scene.GetEntities(_ => _.Active && _.UniqueId.StartsWith(SnakeHelper.SnakePartIdPrefix));
+            var snakePartEntities = Scene.GetEntities(_ => _.Active && _.UniqueId.StartsWith(SnakeGameHelper.SnakePartIdPrefix));
 
             foreach (var snakePartEntity in snakePartEntities)
             {
@@ -61,7 +47,7 @@ namespace SnakeGame.Systems
                 var snakePartComponentSnakePart = snakePartEntity.GetComponent<SnakePartComponent>();
                 var position = snakePartComponentParent.LastPosition;
 
-                snakePartComponentSnakePart.LastPosition = position - new Vector2(SnakeHelper.SnakePixel, 0f);
+                snakePartComponentSnakePart.LastPosition = position - new Vector2(SnakeGameHelper.PixelSize, 0f);
                 snakePartEntity.SetPosition(position);
             }
         }

@@ -1,29 +1,21 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using MonoGame.Helper;
+using MonoGame.Helper.GameComponents;
 using SnakeGame.Scenes;
 
 namespace SnakeGame
 {
     public class Game1 : GameCore
     {
-        public Game1() : base(720, 480, true) { }
+        public Game1() : base(360, 600, true) { }
 
         protected override void Initialize()
         {
             SetScene<GameScene>();
 
+            Components.Add(new LineGridComponent(this, new Vector2(24), Color.Red * 0.3f));
+
             base.Initialize();
-        }
-
-        protected override void Update(GameTime gameTime)
-        {
-            var ks = Keyboard.GetState();
-
-            if (ks.IsKeyDown(Keys.R))
-                SetScene<GameScene>();
-
-            base.Update(gameTime);
         }
     }
 }

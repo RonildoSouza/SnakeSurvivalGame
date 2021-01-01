@@ -1,81 +1,84 @@
 ﻿using Microsoft.Xna.Framework;
-using MonoGame.Helper.Attributes;
 using MonoGame.Helper.ECS;
 using MonoGame.Helper.ECS.Components.Drawables;
 using MonoGame.Helper.ECS.Systems;
-using SnakeGame.Components;
+using MonoGame.Helper.ECS.Systems.Attributes;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SnakeGame.Systems
 {
-    [RequiredComponent(typeof(SnakePartComponent))]
+    [RequiredComponent(typeof(FruitControllerSystem), typeof(SpriteComponent))]
     public sealed class FruitControllerSystem : MonoGame.Helper.ECS.System, IInitializable, IUpdatable
     {
         readonly Lazy<Random> _random = new Lazy<Random>();
-        Rectangle _fruitSize;
-        Vector2 _fruitHalf;
         Entity _fruitEntity;
 
         public void Initialize()
         {
-            _fruitHalf = _fruitSize.Size.ToVector2() / 2f;
+            var fruitSource = SnakeGameHelper.GetSnakeTextureSource(SnakeTexture.Fruit);
+            var startPosition = new Vector2(SnakeGameHelper.PixelSize * 10.5f, SnakeGameHelper.PixelSize * 13.5f);
 
-            _fruitSize = SnakeHelper.GetSnakeTextureSource(SnakeTexture.Fruit);
-
-            var startPosition = new Vector2(
-                Scene.ScreenWidth * 0.6f - _fruitHalf.X,
-                Scene.ScreenHeight / 2f - _fruitHalf.Y);
-
-            _fruitEntity = Scene.CreateEntity("fruit")
+            _fruitEntity = Scene.CreateEntity(SnakeGameHelper.FruitId)
                 .SetPosition(startPosition)
-                .AddComponent(new SpriteComponent(SnakeHelper.GameTextures, sourceRectangle: _fruitSize));
+                .AddComponent(new SpriteComponent(SnakeGameHelper.SnakeGameTextures, sourceRectangle: fruitSource));
         }
 
         public void Update()
         {
-            var snakeHeadEntity = Scene.GetEntity(SnakeHelper.SnakeHeadId);
+            var snakeHeadEntity = Scene.GetEntity(SnakeGameHelper.SnakeHeadId);
 
             // Did the snake eat fruit?
-            if (Vector2.Distance(snakeHeadEntity.Transform.Position, _fruitEntity.Transform.Position) <= 12)
+            if (snakeHeadEntity.Transform.Position == _fruitEntity.Transform.Position)
             {
-                // Update fruit position
-                _fruitEntity.SetPosition(GetNewPosition());
-
-                // Get the last snake part
-                var lastSnakePartEntity = Scene
-                    .GetEntities(_ => MatchComponents(_) && _.UniqueId.StartsWith(SnakeHelper.SnakePartIdPrefix))
-                    .LastOrDefault(_ => !_.Children.Any());
-
-                // Add new snake part as child of the last snake part
-                var newSnakePartEntity = SnakeHelper.CreateSnakePart(Scene);
-                lastSnakePartEntity.AddChild(newSnakePartEntity);
+                UpdateFruitPosition();
+                AddSnakePart();
             }
         }
 
-        Vector2 GetNewPosition()
+        void UpdateFruitPosition()
         {
-            return new Vector2(GetX(), GetY());
+            // Get all snake part positions
+            var snakePartPositions = Scene
+                .GetEntities(_ => MatchComponents(_))
+                .Select(_ => _.Transform.Position);
 
-            int GetX()
+            _fruitEntity.SetPosition(GetX(), GetY());
+
+            float GetX()
             {
-                var x = _random.Value.Next((int)_fruitHalf.X, Scene.ScreenWidth - (int)_fruitHalf.X);
+                var x = SnakeGameHelper.PixelSize *
+                    (_random.Value.Next(0, (Scene.ScreenWidth - 1) / (int)SnakeGameHelper.PixelSize) + 0.5f);
 
-                if (x % _fruitSize.Width != 0)
-                    x = GetX();
+                if (snakePartPositions.Any(_ => _.X == x))
+                    Task.Factory.StartNew(() => x = GetX());
 
                 return x;
             }
 
-            int GetY()
+            float GetY()
             {
-                var y = _random.Value.Next((int)_fruitHalf.Y, Scene.ScreenHeight - (int)_fruitHalf.Y);
+                var y = SnakeGameHelper.PixelSize *
+                    (_random.Value.Next(0, (Scene.ScreenHeight - 1) / (int)SnakeGameHelper.PixelSize) + 0.5f);
 
-                if (y % _fruitSize.Height != 0)
-                    y = GetY();
+                if (snakePartPositions.Any(_ => _.Y == y))
+                    Task.Factory.StartNew(() => y = GetY());
 
                 return y;
             }
+        }
+
+        void AddSnakePart()
+        {
+            // Get the last snake part
+            var lastSnakePartEntity = Scene
+                .GetEntities(_ => MatchComponents(_) && _.UniqueId.StartsWith(SnakeGameHelper.SnakePartIdPrefix))
+                .LastOrDefault(_ => !_.Children.Any());
+
+            // Add new snake part as child of the last snake part
+            var newSnakePartEntity = SnakeGameHelper.CreateSnakePart(Scene);
+            lastSnakePartEntity.AddChild(newSnakePartEntity);
         }
     }
 }

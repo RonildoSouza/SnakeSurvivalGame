@@ -8,11 +8,8 @@ namespace SnakeGame.Systems
     {
         public void Initialize()
         {
-            //var snakeTexture = new Texture2D(Scene.GameCore.GraphicsDevice, 1, 1);
-            //snakeTexture.SetData(new Color[] { Color.Black });
-
-            var gameTextures = Scene.GameCore.Content.Load<Texture2D>("GameTextures");
-            SnakeHelper.SetGameTextures(gameTextures);
+            var gameTextures = Scene.GameCore.Content.Load<Texture2D>("SnakeGameTextures");
+            SnakeGameHelper.SetGameTextures(gameTextures);
         }
     }
 }
