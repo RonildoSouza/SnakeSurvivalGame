@@ -1,8 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Curupira2D.ECS;
+using Curupira2D.ECS.Systems;
+using Curupira2D.ECS.Systems.Attributes;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.Helper.ECS;
-using MonoGame.Helper.ECS.Systems;
-using MonoGame.Helper.ECS.Systems.Attributes;
 using SnakeGame.Components;
 using System;
 using System.Linq;
@@ -10,7 +10,7 @@ using System.Linq;
 namespace SnakeGame.Systems
 {
     [RequiredComponent(typeof(SnakeHeadControllerSystem), typeof(SnakePartComponent))]
-    public sealed class SnakeHeadControllerSystem : MonoGame.Helper.ECS.System, IUpdatable
+    public sealed class SnakeHeadControllerSystem : Curupira2D.ECS.System, IUpdatable
     {
         TimeSpan _sleepTime = TimeSpan.Zero;
         KeyboardState _oldKeyboardState = new KeyboardState();

@@ -1,12 +1,12 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Helper.ECS;
-using MonoGame.Helper.ECS.Systems;
+﻿using Curupira2D.ECS;
+using Curupira2D.ECS.Systems;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace SnakeGame.Systems
 {
-    public sealed class GameInitializeSystem : MonoGame.Helper.ECS.System, IInitializable
+    public sealed class GameInitializeSystem : Curupira2D.ECS.System, ILoadable
     {
-        public void Initialize()
+        public void LoadContent()
         {
             var gameTextures = Scene.GameCore.Content.Load<Texture2D>("SnakeGameTextures");
             SnakeGameHelper.SetGameTextures(gameTextures);

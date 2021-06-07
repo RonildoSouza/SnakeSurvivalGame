@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using MonoGame.Helper.ECS.Components;
+﻿using Curupira2D.ECS.Components;
+using Microsoft.Xna.Framework;
 
 namespace SnakeGame.Components
 {

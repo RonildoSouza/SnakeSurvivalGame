@@ -1,6 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using MonoGame.Helper;
-using MonoGame.Helper.GameComponents;
+﻿using Curupira2D;
+using Curupira2D.GameComponents;
+using Microsoft.Xna.Framework;
 using SnakeGame.Scenes;
 
 namespace SnakeGame
@@ -11,7 +11,7 @@ namespace SnakeGame
 
         protected override void Initialize()
         {
-            SetScene<GameScene>();
+            SetScene<GameScene01>();
 
             Components.Add(new LineGridComponent(this, new Vector2(24), Color.Red * 0.3f));
 

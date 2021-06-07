@@ -1,10 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Curupira2D.ECS;
+using Curupira2D.ECS.Components.Drawables;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Helper.ECS;
-using MonoGame.Helper.ECS.Components.Drawables;
 using SnakeGame.Components;
 using System;
-using System.Linq;
 
 namespace SnakeGame
 {
@@ -12,7 +11,7 @@ namespace SnakeGame
     {
         public const string SnakeHeadId = "snakeHead";
         public const string SnakePartIdPrefix = "snakePart";
-        public const string FruitId= "fruit";
+        public const string FruitId = "fruit";
         public const float PixelSize = 24;
         public const float PixelSizeHalf = PixelSize * 0.5f;
 
@@ -48,6 +47,7 @@ namespace SnakeGame
                 SnakeTexture.Head => new Rectangle(0, 0, (int)PixelSize, (int)PixelSize),
                 SnakeTexture.Body => new Rectangle(0, 0, (int)PixelSize, (int)PixelSize),
                 SnakeTexture.Fruit => new Rectangle((int)PixelSize, 0, (int)PixelSize, (int)PixelSize),
+                SnakeTexture.Mouse => new Rectangle((int)PixelSize * 2, 0, (int)PixelSize, (int)PixelSize),
                 _ => Rectangle.Empty,
             };
         }
@@ -57,6 +57,7 @@ namespace SnakeGame
     {
         Head,
         Body,
-        Fruit
+        Fruit,
+        Mouse
     }
 }

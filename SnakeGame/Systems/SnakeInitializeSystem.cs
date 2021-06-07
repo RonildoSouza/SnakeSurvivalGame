@@ -1,15 +1,15 @@
-﻿using Microsoft.Xna.Framework;
-using MonoGame.Helper.ECS;
-using MonoGame.Helper.ECS.Components.Drawables;
-using MonoGame.Helper.ECS.Systems;
+﻿using Curupira2D.ECS;
+using Curupira2D.ECS.Components.Drawables;
+using Curupira2D.ECS.Systems;
+using Microsoft.Xna.Framework;
 using SnakeGame.Components;
 using System.Collections.Generic;
 
 namespace SnakeGame.Systems
 {
-    public sealed class SnakeInitializeSystem : MonoGame.Helper.ECS.System, IInitializable
+    public sealed class SnakeInitializeSystem : Curupira2D.ECS.System, ILoadable
     {
-        public void Initialize()
+        public void LoadContent()
         {
             var snakeHeadEntity = CreateSnakeHead();
             var snakePartEntities = new List<Entity> { snakeHeadEntity };

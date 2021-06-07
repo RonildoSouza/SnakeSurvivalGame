@@ -1,8 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using MonoGame.Helper.ECS;
-using MonoGame.Helper.ECS.Components.Drawables;
-using MonoGame.Helper.ECS.Systems;
-using MonoGame.Helper.ECS.Systems.Attributes;
+﻿using Curupira2D.ECS;
+using Curupira2D.ECS.Components.Drawables;
+using Curupira2D.ECS.Systems;
+using Curupira2D.ECS.Systems.Attributes;
+using Microsoft.Xna.Framework;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,14 +10,16 @@ using System.Threading.Tasks;
 namespace SnakeGame.Systems
 {
     [RequiredComponent(typeof(FruitControllerSystem), typeof(SpriteComponent))]
-    public sealed class FruitControllerSystem : MonoGame.Helper.ECS.System, IInitializable, IUpdatable
+    public sealed class FruitControllerSystem : Curupira2D.ECS.System, ILoadable, IUpdatable
     {
         readonly Lazy<Random> _random = new Lazy<Random>();
         Entity _fruitEntity;
 
-        public void Initialize()
+        public event EventHandler SnakeEatFruit;
+
+        public void LoadContent()
         {
-            var fruitSource = SnakeGameHelper.GetSnakeTextureSource(SnakeTexture.Fruit);
+            var fruitSource = SnakeGameHelper.GetSnakeTextureSource(SnakeTexture.Mouse);
             var startPosition = new Vector2(SnakeGameHelper.PixelSize * 10.5f, SnakeGameHelper.PixelSize * 13.5f);
 
             _fruitEntity = Scene.CreateEntity(SnakeGameHelper.FruitId)
@@ -34,6 +36,8 @@ namespace SnakeGame.Systems
             {
                 UpdateFruitPosition();
                 AddSnakePart();
+
+                SnakeEatFruit?.Invoke(this, null);
             }
         }
 

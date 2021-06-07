@@ -1,13 +1,13 @@
-﻿using MonoGame.Helper.ECS.Components.Drawables;
-using MonoGame.Helper.ECS.Systems;
-using MonoGame.Helper.ECS.Systems.Attributes;
+﻿using Curupira2D.ECS.Components.Drawables;
+using Curupira2D.ECS.Systems;
+using Curupira2D.ECS.Systems.Attributes;
 using SnakeGame.Components;
 using System;
 
 namespace SnakeGame.Systems
 {
     [RequiredComponent(typeof(SnakePartControllerSystem), new Type[] { typeof(SpriteComponent), typeof(SnakePartComponent) })]
-    public sealed class SnakePartControllerSystem : MonoGame.Helper.ECS.System, IUpdatable
+    public sealed class SnakePartControllerSystem : Curupira2D.ECS.System, IUpdatable
     {
         public void Update()
         {
