@@ -31,10 +31,11 @@ namespace SnakeGame.Systems
 
         public void ChangeScore(object sender, EventArgs e)
         {
+            _score += 20;
+
             var scoreTextComponent = _scoreEntity.GetComponent<TextComponent>();
             var scoreText = string.Format(scoreFormatText, _score);
 
-            _score += 20;
             scoreTextComponent.Text = scoreText;
 
             _scoreEntity.SetPositionX(GetPositionX(_spriteFont, scoreText));

@@ -10,9 +10,9 @@ namespace SnakeGame.Scenes
         readonly int _scoreToChangeLevel = 100;
         FruitControllerSystem _fruitControllerSystem;
         ScoreControllerSystem _scoreControllerSystem;
-        GameSceneLevelBase _nextGameSceneLevel;
         IList<Vector2> _blocksPosition;
 
+        public GameSceneLevelBase NextGameSceneLevel { get; private set; }
         protected int Score { get; set; }
 
         public override void LoadContent()
@@ -37,16 +37,16 @@ namespace SnakeGame.Scenes
 
         protected virtual void ScoreControllerSystem_ScoreChange(object sender, ScoreChangeEventArgs e)
         {
-            if (_nextGameSceneLevel == null || e.Score % _scoreToChangeLevel != 0)
+            if (NextGameSceneLevel == null || e.Score % _scoreToChangeLevel != 0)
                 return;
 
-            _nextGameSceneLevel.Score = e.Score;
-            GameCore.SetScene(_nextGameSceneLevel);
+            NextGameSceneLevel.Score = e.Score;
+            GameCore.SetScene(NextGameSceneLevel);
         }
 
         protected void SetNextGameSceneLevel(GameSceneLevelBase gameSceneLevel)
         {
-            _nextGameSceneLevel = gameSceneLevel;
+            NextGameSceneLevel = gameSceneLevel;
         }
 
         protected void AddBlockPosition(Vector2 position)
