@@ -11,7 +11,7 @@ namespace SnakeGame
 
         protected override void Initialize()
         {
-            SetScene<GameScene01>();
+            SetScene<GameSceneLevel01>();
 
             Components.Add(new LineGridComponent(this, new Vector2(24), Color.Red * 0.3f));
 

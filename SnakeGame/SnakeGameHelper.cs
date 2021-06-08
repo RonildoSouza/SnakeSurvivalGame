@@ -48,6 +48,7 @@ namespace SnakeGame
                 SnakeTexture.Body => new Rectangle(0, 0, (int)PixelSize, (int)PixelSize),
                 SnakeTexture.Fruit => new Rectangle((int)PixelSize, 0, (int)PixelSize, (int)PixelSize),
                 SnakeTexture.Mouse => new Rectangle((int)PixelSize * 2, 0, (int)PixelSize, (int)PixelSize),
+                SnakeTexture.Block => new Rectangle(0, (int)PixelSize, (int)PixelSize * 3, (int)PixelSize * 3),
                 _ => Rectangle.Empty,
             };
         }
@@ -58,6 +59,7 @@ namespace SnakeGame
         Head,
         Body,
         Fruit,
-        Mouse
+        Mouse,
+        Block
     }
 }

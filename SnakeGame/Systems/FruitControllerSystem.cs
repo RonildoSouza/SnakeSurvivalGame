@@ -19,7 +19,7 @@ namespace SnakeGame.Systems
 
         public void LoadContent()
         {
-            var fruitSource = SnakeGameHelper.GetSnakeTextureSource(SnakeTexture.Mouse);
+            var fruitSource = SnakeGameHelper.GetSnakeTextureSource(SnakeTexture.Fruit);
             var startPosition = new Vector2(SnakeGameHelper.PixelSize * 10.5f, SnakeGameHelper.PixelSize * 13.5f);
 
             _fruitEntity = Scene.CreateEntity(SnakeGameHelper.FruitId)
