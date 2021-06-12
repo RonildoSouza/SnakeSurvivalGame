@@ -7,7 +7,7 @@ namespace SnakeGame.Scenes
 {
     public abstract class GameSceneLevelBase : Scene
     {
-        readonly int _scoreToChangeLevel = 100;
+        readonly int _scoreToChangeLevel = 1000;
         FruitControllerSystem _fruitControllerSystem;
         ScoreControllerSystem _scoreControllerSystem;
         IList<Vector2> _blocksPosition;
@@ -17,7 +17,6 @@ namespace SnakeGame.Scenes
 
         public override void LoadContent()
         {
-            AddSystem<GameInitializeSystem>();
             AddSystem<SnakeInitializeSystem>();
             AddSystem<SnakeHeadControllerSystem>();
             AddSystem<SnakePartControllerSystem>();
@@ -31,6 +30,11 @@ namespace SnakeGame.Scenes
 
             AddSystem(_fruitControllerSystem);
             AddSystem(_scoreControllerSystem);
+
+            SnakeGameHelper.CleanBlockEntityPositions();
+#if DEBUG
+            AddSystem<DebugSystem>();
+#endif
 
             base.LoadContent();
         }

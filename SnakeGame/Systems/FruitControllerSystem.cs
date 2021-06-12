@@ -39,6 +39,10 @@ namespace SnakeGame.Systems
 
                 SnakeEatFruit?.Invoke(this, null);
             }
+
+            // Does fruit position intersect with any block?
+            if (Scene.PositionIntersectWithAnyBlockEntity(_fruitEntity.Transform.Position))
+                UpdateFruitPosition();
         }
 
         void UpdateFruitPosition()
@@ -81,7 +85,7 @@ namespace SnakeGame.Systems
                 .LastOrDefault(_ => !_.Children.Any());
 
             // Add new snake part as child of the last snake part
-            var newSnakePartEntity = SnakeGameHelper.CreateSnakePart(Scene);
+            var newSnakePartEntity = Scene.CreateSnakePart();
             lastSnakePartEntity.AddChild(newSnakePartEntity);
         }
     }

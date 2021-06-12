@@ -12,41 +12,32 @@ namespace SnakeGame.Systems
     [RequiredComponent(typeof(ScoreControllerSystem), typeof(TextComponent))]
     public sealed class ScoreControllerSystem : TextSystem, ILoadable
     {
-        Entity _scoreEntity;
         static int _score = 0;
         const string scoreFormatText = "Score: {0}";
-        SpriteFont _spriteFont;
+        TextComponent _scoreTextComponent;
 
         public event EventHandler<ScoreChangeEventArgs> ScoreChange;
 
         public void LoadContent()
         {
-            _spriteFont = Scene.GameCore.Content.Load<SpriteFont>("Font");
+            var spriteFont = Scene.GameCore.Content.Load<SpriteFont>("Font");
             var scoreText = string.Format(scoreFormatText, _score);
 
-            _scoreEntity = Scene.CreateEntity("score")
-                .SetPosition(new Vector2(GetPositionX(_spriteFont, scoreText), SnakeGameHelper.PixelSize))
-                .AddComponent(new TextComponent(_spriteFont, scoreText, color: Color.Black));
+            _scoreTextComponent = new TextComponent(spriteFont, scoreText, color: Color.Black);
+
+            Scene.CreateEntity("score")
+                .SetPosition(new Vector2(Scene.ScreenCenter.X * 1.5f, Scene.ScreenHeight - (SnakeGameHelper.PixelSize * 1.5f)))
+                .AddComponent(_scoreTextComponent);
         }
 
         public void ChangeScore(object sender, EventArgs e)
         {
-            _score += 20;
-
-            var scoreTextComponent = _scoreEntity.GetComponent<TextComponent>();
+            _score += 40;
             var scoreText = string.Format(scoreFormatText, _score);
 
-            scoreTextComponent.Text = scoreText;
-
-            _scoreEntity.SetPositionX(GetPositionX(_spriteFont, scoreText));
+            _scoreTextComponent.Text = scoreText;
 
             ScoreChange?.Invoke(this, new ScoreChangeEventArgs(_score));
-        }
-
-        public float GetPositionX(SpriteFont spriteFont, string scoreText)
-        {
-            var measure = spriteFont.MeasureString(scoreText);
-            return measure.X;
         }
 
         public void SetScore(int score) => _score = score;

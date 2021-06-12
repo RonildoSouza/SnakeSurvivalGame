@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{6417AD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curupira2D", "..\Curupira2D\src\Curupira2D\Curupira2D.csproj", "{51E883CD-08DB-45DF-8CC0-9FC5FA20A7D8}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curupira2D.GameComponents", "..\Curupira2D\src\Curupira2D.GameComponents\Curupira2D.GameComponents.csproj", "{9C01FB05-4DBD-4F52-9B89-4B2DDE6B9174}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,12 +25,17 @@ Global
 		{51E883CD-08DB-45DF-8CC0-9FC5FA20A7D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51E883CD-08DB-45DF-8CC0-9FC5FA20A7D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51E883CD-08DB-45DF-8CC0-9FC5FA20A7D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C01FB05-4DBD-4F52-9B89-4B2DDE6B9174}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C01FB05-4DBD-4F52-9B89-4B2DDE6B9174}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C01FB05-4DBD-4F52-9B89-4B2DDE6B9174}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C01FB05-4DBD-4F52-9B89-4B2DDE6B9174}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{51E883CD-08DB-45DF-8CC0-9FC5FA20A7D8} = {6417AD44-9A97-4834-827D-FA5402FBA50B}
+		{9C01FB05-4DBD-4F52-9B89-4B2DDE6B9174} = {6417AD44-9A97-4834-827D-FA5402FBA50B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A20996FA-A358-4D63-AC8C-86EFB7E2A477}

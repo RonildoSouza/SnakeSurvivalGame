@@ -27,7 +27,7 @@ namespace SnakeGame.Systems
             var blockSource = SnakeGameHelper.GetSnakeTextureSource(SnakeTexture.Block);
 
             foreach (var block in _blocksPosition)
-                Scene.CreateEntity($"{Guid.NewGuid()}", "block")
+                Scene.CreateEntity($"{Guid.NewGuid()}", SnakeGameHelper.BlockGroupName)
                     .SetPosition(block)
                     .AddComponent(new SpriteComponent(SnakeGameHelper.SnakeGameTextures, sourceRectangle: blockSource));
         }

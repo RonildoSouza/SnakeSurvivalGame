@@ -61,7 +61,12 @@ namespace SnakeGame.Systems
                     .GetEntities(_ => MatchComponents(_) && _.UniqueId.StartsWith(SnakeGameHelper.SnakePartIdPrefix))
                     .Select(_ => _.Transform.Position);
 
-                if (snakePartPositions.Any(_ => _ == snakeHeadEntity.Transform.Position))
+                var snakeBlockPositions = Scene
+                    .GetEntities(SnakeGameHelper.BlockGroupName)
+                    .Select(_ => _.Transform.Position);
+
+                if (snakePartPositions.Any(_ => Vector2.Distance(_, snakeHeadEntity.Transform.Position) <= 0f)
+                    || Scene.PositionIntersectWithAnyBlockEntity(snakeHeadEntity.Transform.Position))
                     Scene.SetCleanColor(Color.Red);
                 else
                     Scene.SetCleanColor(Color.LightGray);

@@ -16,7 +16,7 @@ namespace SnakeGame.Systems
 
             for (int i = 0; i < 2; i++)
             {
-                var snakePartEntity = SnakeGameHelper.CreateSnakePart(Scene);
+                var snakePartEntity = Scene.CreateSnakePart();
 
                 snakePartEntities[i].AddChild(snakePartEntity);
                 snakePartEntities.Add(snakePartEntity);
@@ -31,7 +31,7 @@ namespace SnakeGame.Systems
             var startPosition = new Vector2(SnakeGameHelper.PixelSize * 8.5f, SnakeGameHelper.PixelSize * 12.5f);
             var lastPosition = startPosition - new Vector2(SnakeGameHelper.PixelSize, 0f);
 
-            return Scene.CreateEntity(SnakeGameHelper.SnakeHeadId)
+            return Scene.CreateEntity(SnakeGameHelper.SnakeHeadId, SnakeGameHelper.SnakeGroupName)
                 .SetPosition(startPosition)
                 .AddComponent(new SpriteComponent(SnakeGameHelper.SnakeGameTextures, sourceRectangle: snakeHeadSource))
                 .AddComponent(new SnakePartComponent(lastPosition, SnakeGameHelper.RightDirection));
