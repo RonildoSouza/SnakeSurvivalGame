@@ -4,7 +4,6 @@ using Curupira2D.ECS.Systems;
 using Curupira2D.ECS.Systems.Attributes;
 using Curupira2D.ECS.Systems.Drawables;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 
 namespace SnakeGame.Systems
@@ -20,13 +19,12 @@ namespace SnakeGame.Systems
 
         public void LoadContent()
         {
-            var spriteFont = Scene.GameCore.Content.Load<SpriteFont>("Font");
             var scoreText = string.Format(scoreFormatText, _score);
 
-            _scoreTextComponent = new TextComponent(spriteFont, scoreText, color: Color.Black);
+            _scoreTextComponent = new TextComponent(Scene.GetGameFont(), scoreText, color: Color.Black);
 
             Scene.CreateEntity("score")
-                .SetPosition(new Vector2(Scene.ScreenCenter.X * 1.5f, Scene.ScreenHeight - (SnakeGameHelper.PixelSize * 1.5f)))
+                .SetPosition(new Vector2(Scene.ScreenCenter.X * 1.5f, SnakeGameHelper.PixelSize * 23.5f))
                 .AddComponent(_scoreTextComponent);
         }
 

@@ -1,4 +1,5 @@
 ﻿using Curupira2D.ECS;
+using Curupira2D.ECS.Components.Drawables;
 using Curupira2D.ECS.Systems;
 using Curupira2D.ECS.Systems.Attributes;
 using Microsoft.Xna.Framework;
@@ -10,18 +11,38 @@ using System.Linq;
 namespace SnakeGame.Systems
 {
     [RequiredComponent(typeof(SnakeHeadControllerSystem), typeof(SnakePartComponent))]
-    public sealed class SnakeHeadControllerSystem : Curupira2D.ECS.System, IUpdatable
+    public sealed class SnakeHeadControllerSystem : Curupira2D.ECS.System, ILoadable, IUpdatable
     {
         TimeSpan _sleepTime = TimeSpan.Zero;
         KeyboardState _oldKeyboardState = new KeyboardState();
         Vector2 direction = SnakeGameHelper.RightDirection;
         readonly TimeSpan _snakeSpeed = TimeSpan.FromMilliseconds(100);
+        bool _start;
+
+        public void LoadContent()
+        {
+            Scene.CreateEntity(nameof(_start))
+                .SetPosition(Scene.ScreenCenter)
+                .AddComponent(new TextComponent(SnakeGameHelper.GetGameFont(Scene), $"{Scene.Title} - Press SPACE to Start!", color: Color.MonoGameOrange));
+        }
 
         public void Update()
         {
+            var keyboardState = Keyboard.GetState();
+
+            if (!_start)
+            {
+                if (keyboardState.IsKeyDown(Keys.Space) && !_oldKeyboardState.IsKeyDown(Keys.Space))
+                {
+                    _start = true;
+                    Scene.RemoveEntity(nameof(_start));
+                }
+
+                return;
+            }
+
             var snakeHeadEntity = Scene.GetEntity(SnakeGameHelper.SnakeHeadId);
             var snakePartComponentSnakeHead = snakeHeadEntity.GetComponent<SnakePartComponent>();
-            var keyboardState = Keyboard.GetState();
 
             if (keyboardState.IsKeyDown(Keys.Left) && !_oldKeyboardState.IsKeyDown(Keys.Right))
             {

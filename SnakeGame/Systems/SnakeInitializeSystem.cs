@@ -28,7 +28,7 @@ namespace SnakeGame.Systems
         Entity CreateSnakeHead()
         {
             var snakeHeadSource = SnakeGameHelper.GetSnakeTextureSource(SnakeTexture.Head);
-            var startPosition = new Vector2(SnakeGameHelper.PixelSize * 8.5f, SnakeGameHelper.PixelSize * 12.5f);
+            var startPosition = new Vector2(SnakeGameHelper.PixelSize * 4.5f, SnakeGameHelper.PixelSize * 23.5f);
             var lastPosition = startPosition - new Vector2(SnakeGameHelper.PixelSize, 0f);
 
             return Scene.CreateEntity(SnakeGameHelper.SnakeHeadId, SnakeGameHelper.SnakeGroupName)

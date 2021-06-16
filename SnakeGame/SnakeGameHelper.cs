@@ -76,6 +76,12 @@ namespace SnakeGame
                 return otherRectangle.Intersects(blockRectangle);
             });
         }
+
+        internal static SpriteFont GetGameFont(this Scene scene, string fontName = "Font")
+        {
+            var spriteFont = scene.GameCore.Content.Load<SpriteFont>(fontName);
+            return spriteFont;
+        }
         #endregion
     }
 

@@ -9,6 +9,7 @@ namespace SnakeGame.Systems
         public void LoadContent()
         {
             var gameTextures = Scene.GameCore.Content.Load<Texture2D>("SnakeGameTextures");
+
             SnakeGameHelper.SetGameTextures(gameTextures);
         }
     }

@@ -1,7 +1,6 @@
 ﻿using Curupira2D.ECS;
 using Curupira2D.ECS.Components.Drawables;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SnakeGame.Systems;
 
@@ -13,11 +12,9 @@ namespace SnakeGame.Scenes
         {
             AddSystem<GameInitializeSystem>();
 
-            var spriteFont = GameCore.Content.Load<SpriteFont>("Font");
-
             CreateEntity("menu")
                 .SetPosition(ScreenCenter)
-                .AddComponent(new TextComponent(spriteFont, "Press ENTER to Start!", color: Color.Red));
+                .AddComponent(new TextComponent(this.GetGameFont(), "Press ENTER to Start!", color: Color.Red));
 
             base.LoadContent();
         }
