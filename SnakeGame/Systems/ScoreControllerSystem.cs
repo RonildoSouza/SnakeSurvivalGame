@@ -2,14 +2,13 @@
 using Curupira2D.ECS.Components.Drawables;
 using Curupira2D.ECS.Systems;
 using Curupira2D.ECS.Systems.Attributes;
-using Curupira2D.ECS.Systems.Drawables;
 using Microsoft.Xna.Framework;
 using System;
 
 namespace SnakeGame.Systems
 {
     [RequiredComponent(typeof(ScoreControllerSystem), typeof(TextComponent))]
-    public sealed class ScoreControllerSystem : TextSystem, ILoadable
+    public sealed class ScoreControllerSystem : Curupira2D.ECS.System, ILoadable
     {
         static int _score = 0;
         const string scoreFormatText = "Score: {0}";

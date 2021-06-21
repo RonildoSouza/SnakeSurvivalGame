@@ -2,7 +2,6 @@
 using Curupira2D.ECS.Components.Drawables;
 using Curupira2D.ECS.Systems;
 using Curupira2D.ECS.Systems.Attributes;
-using Curupira2D.ECS.Systems.Drawables;
 using Curupira2D.GameComponents;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -13,7 +12,7 @@ using System.Linq;
 namespace SnakeGame.Systems
 {
     [RequiredComponent(typeof(DebugSystem), typeof(TextComponent))]
-    public sealed class DebugSystem : TextSystem, ILoadable, IUpdatable
+    public sealed class DebugSystem : Curupira2D.ECS.System, ILoadable, IUpdatable
     {
         Entity _debugEntity;
         TextComponent _debugTextComponent;

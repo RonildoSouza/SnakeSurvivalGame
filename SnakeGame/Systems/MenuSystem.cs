@@ -2,7 +2,6 @@
 using Curupira2D.ECS.Components.Drawables;
 using Curupira2D.ECS.Systems;
 using Curupira2D.ECS.Systems.Attributes;
-using Curupira2D.ECS.Systems.Drawables;
 using Microsoft.Xna.Framework;
 using SnakeGame.Scenes;
 using System.Collections.Generic;
@@ -10,8 +9,9 @@ using System.Linq;
 
 namespace SnakeGame.Systems
 {
+    [RequiredComponent(typeof(MenuSystem), typeof(SpriteComponent))]
     [RequiredComponent(typeof(MenuSystem), typeof(TextComponent))]
-    public sealed class MenuSystem : TextSystem, ILoadable, IUpdatable
+    public sealed class MenuSystem : Curupira2D.ECS.System, ILoadable, IUpdatable
     {
         IDictionary<MenuButton, Rectangle> _buttonBoundingBoxes;
         Rectangle _sourceRectanglePointerCursor;
@@ -24,7 +24,7 @@ namespace SnakeGame.Systems
             // Mouse cursor entities
             _sourceRectanglePointerCursor = SnakeGameHelper.GetMouseCursorTextureSource(MouseCursorTexture.Pointer);
             _sourceRectangleHandCursor = SnakeGameHelper.GetMouseCursorTextureSource(MouseCursorTexture.Hand);
-            _mouseCursorSpriteComponent = new SpriteComponent(SnakeGameHelper.MouseCursorTextures, sourceRectangle: _sourceRectanglePointerCursor);
+            _mouseCursorSpriteComponent = new SpriteComponent(SnakeGameHelper.MouseCursorTextures, sourceRectangle: _sourceRectanglePointerCursor, drawInUICamera: true, layerDepth: 1f);
 
             _mouseCursorEntity = Scene.CreateEntity("MouseCursor").AddComponent(_mouseCursorSpriteComponent);
 
