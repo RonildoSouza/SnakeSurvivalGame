@@ -28,7 +28,11 @@ namespace SnakeGame
 
         internal static Texture2D SnakeGameTextures { get; private set; }
 
-        internal static void SetGameTextures(Texture2D gameTextures) => SnakeGameTextures = gameTextures;
+        internal static Texture2D MouseCursorTextures { get; private set; }
+
+        internal static void SetSnakeGameTextures(Texture2D gameTextures) => SnakeGameTextures = gameTextures;
+
+        internal static void SetMouseCursorTextures(Texture2D gameTextures) => MouseCursorTextures = gameTextures;
 
         internal static Rectangle GetSnakeTextureSource(SnakeTexture snakeTexture)
         {
@@ -39,6 +43,16 @@ namespace SnakeGame
                 SnakeTexture.Fruit => new Rectangle((int)PixelSize, 0, (int)PixelSize, (int)PixelSize),
                 SnakeTexture.Mouse => new Rectangle((int)PixelSize * 2, 0, (int)PixelSize, (int)PixelSize),
                 SnakeTexture.Block => new Rectangle(0, (int)PixelSize, (int)PixelSize * 3, (int)PixelSize * 3),
+                _ => Rectangle.Empty,
+            };
+        }
+
+        internal static Rectangle GetMouseCursorTextureSource(MouseCursorTexture mouseCursorTexture)
+        {
+            return mouseCursorTexture switch
+            {
+                MouseCursorTexture.Pointer => new Rectangle(0, 0, 15, (int)PixelSize),
+                MouseCursorTexture.Hand => new Rectangle(15, 0, 20, (int)PixelSize),
                 _ => Rectangle.Empty,
             };
         }
@@ -77,20 +91,26 @@ namespace SnakeGame
             });
         }
 
-        internal static SpriteFont GetGameFont(this Scene scene, string fontName = "Font")
+        internal static SpriteFont GetGameFont(this Scene scene, string fontName)
         {
-            var spriteFont = scene.GameCore.Content.Load<SpriteFont>(fontName);
+            var spriteFont = scene.GameCore.Content.Load<SpriteFont>($"Fonts/{fontName}");
             return spriteFont;
         }
         #endregion
     }
 
-    public enum SnakeTexture
+    internal enum SnakeTexture
     {
         Head,
         Body,
         Fruit,
         Mouse,
         Block
+    }
+
+    internal enum MouseCursorTexture
+    {
+        Pointer,
+        Hand,
     }
 }

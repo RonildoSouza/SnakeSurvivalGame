@@ -31,4 +31,12 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Curupira2D\src\Curupira2D\Curupira2D.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="Content\Fonts\FreePixel.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\SerpensRegular.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

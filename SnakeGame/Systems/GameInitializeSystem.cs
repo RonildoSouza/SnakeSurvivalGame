@@ -8,9 +8,11 @@ namespace SnakeGame.Systems
     {
         public void LoadContent()
         {
-            var gameTextures = Scene.GameCore.Content.Load<Texture2D>("SnakeGameTextures");
+            var snakeGameTextures = Scene.GameCore.Content.Load<Texture2D>("Textures/SnakeGame");
+            var mouseCursorTextures = Scene.GameCore.Content.Load<Texture2D>("Textures/MouseCursors");
 
-            SnakeGameHelper.SetGameTextures(gameTextures);
+            SnakeGameHelper.SetSnakeGameTextures(snakeGameTextures);
+            SnakeGameHelper.SetMouseCursorTextures(mouseCursorTextures);
         }
     }
 }

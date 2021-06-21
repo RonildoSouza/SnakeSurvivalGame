@@ -5,7 +5,6 @@ using Curupira2D.ECS.Systems.Attributes;
 using Curupira2D.ECS.Systems.Drawables;
 using Curupira2D.GameComponents;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SnakeGame.Scenes;
 using System.Collections.Generic;
@@ -24,8 +23,7 @@ namespace SnakeGame.Systems
 
         public void LoadContent()
         {
-            var spriteFont = Scene.GameCore.Content.Load<SpriteFont>("Font");
-            _debugTextComponent = new TextComponent(spriteFont, string.Empty, color: Color.DarkRed);
+            _debugTextComponent = new TextComponent(Scene.GetGameFont("Debug"), string.Empty, color: Color.Yellow);
 
             _debugEntity = Scene.CreateEntity("debug")
                 .SetPosition(new Vector2(120f, 120f))

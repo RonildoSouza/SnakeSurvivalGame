@@ -21,7 +21,7 @@ namespace SnakeGame.Systems
         {
             var scoreText = string.Format(scoreFormatText, _score);
 
-            _scoreTextComponent = new TextComponent(Scene.GetGameFont(), scoreText, color: Color.Black);
+            _scoreTextComponent = new TextComponent(Scene.GetGameFont("Score"), scoreText, color: Color.Black);
 
             Scene.CreateEntity("score")
                 .SetPosition(new Vector2(Scene.ScreenCenter.X * 1.5f, SnakeGameHelper.PixelSize * 23.5f))
@@ -37,8 +37,6 @@ namespace SnakeGame.Systems
 
             ScoreChange?.Invoke(this, new ScoreChangeEventArgs(_score));
         }
-
-        public void SetScore(int score) => _score = score;
     }
 
     public class ScoreChangeEventArgs : EventArgs

@@ -23,7 +23,7 @@ namespace SnakeGame.Systems
         {
             Scene.CreateEntity(nameof(_start))
                 .SetPosition(Scene.ScreenCenter)
-                .AddComponent(new TextComponent(SnakeGameHelper.GetGameFont(Scene), $"{Scene.Title} - Press SPACE to Start!", color: Color.MonoGameOrange));
+                .AddComponent(new TextComponent(Scene.GetGameFont("MainText"), $"{Scene.Title}\nPress\nSPACE\nto\nStart!", color: Color.Black));
         }
 
         public void Update()
