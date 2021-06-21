@@ -13,7 +13,7 @@ namespace SnakeGame.Systems
     [RequiredComponent(typeof(MenuSystem), typeof(TextComponent))]
     public sealed class MenuSystem : Curupira2D.ECS.System, ILoadable, IUpdatable
     {
-        IDictionary<MenuButton, Rectangle> _buttonBoundingBoxes;
+        IList<(MenuButton MenuButton, Rectangle BoundingBox, TextComponent Component)> _buttonsData;
         Rectangle _sourceRectanglePointerCursor;
         Rectangle _sourceRectangleHandCursor;
         SpriteComponent _mouseCursorSpriteComponent;
@@ -30,47 +30,70 @@ namespace SnakeGame.Systems
 
             // Button entities
             var btnStartTextComponent = TextComponentBuilder("Start");
-            Scene.CreateEntity(nameof(MenuButton.Start)).SetPosition(Scene.ScreenCenter.X, Scene.ScreenCenter.Y + 50f).AddComponent(btnStartTextComponent);
+            Scene.CreateEntity(nameof(MenuButton.Start)).SetPosition(Scene.ScreenCenter.X, Scene.ScreenCenter.Y * 1.3f).AddComponent(btnStartTextComponent);
 
             var btnRankingTextComponent = TextComponentBuilder("Ranking");
-            Scene.CreateEntity(nameof(MenuButton.Ranking)).SetPosition(Scene.ScreenCenter.X, Scene.ScreenCenter.Y - 50f).AddComponent(btnRankingTextComponent);
+            Scene.CreateEntity(nameof(MenuButton.Ranking)).SetPosition(Scene.ScreenCenter).AddComponent(btnRankingTextComponent);
 
-            // Button bounding boxes
-            _buttonBoundingBoxes = new Dictionary<MenuButton, Rectangle>
+            var btnQuitTextComponent = TextComponentBuilder("Quit");
+            Scene.CreateEntity(nameof(MenuButton.Quit)).SetPosition(Scene.ScreenCenter.X, Scene.ScreenCenter.Y * 0.7f).AddComponent(btnQuitTextComponent);
+
+            // Buttons datas
+            _buttonsData = new List<(MenuButton, Rectangle, TextComponent)>
             {
-                { MenuButton.Start, new Rectangle(Scene.GetEntityPosition(nameof(MenuButton.Start)).ToPoint(), btnStartTextComponent.TextSize.ToPoint()) },
-                { MenuButton.Ranking, new Rectangle(Scene.GetEntityPosition(nameof(MenuButton.Ranking)).ToPoint(), btnRankingTextComponent.TextSize.ToPoint()) },
+                ( MenuButton.Start, new Rectangle(Scene.GetEntityPosition(nameof(MenuButton.Start)).ToPoint(), btnStartTextComponent.TextSize.ToPoint()), btnStartTextComponent ),
+                ( MenuButton.Ranking, new Rectangle(Scene.GetEntityPosition(nameof(MenuButton.Ranking)).ToPoint(), btnRankingTextComponent.TextSize.ToPoint()), btnRankingTextComponent ),
+                ( MenuButton.Quit, new Rectangle(Scene.GetEntityPosition(nameof(MenuButton.Quit)).ToPoint(), btnQuitTextComponent.TextSize.ToPoint()), btnQuitTextComponent ),
             };
         }
 
         public void Update()
         {
-            if (IsMenuButtonPressed(MenuButton.Start, Scene.MouseInputManager.GetPosition()))
-                Scene.GameCore.SetScene<GameSceneLevel01>();
+            var mousePosition = Scene.MouseInputManager.GetPosition();
 
-            if (IsMenuButtonPressed(MenuButton.Ranking, Scene.MouseInputManager.GetPosition()))
-                Scene.SetCleanColor(Color.Green);
-
-            UpdateMouseCursor(Scene.MouseInputManager.GetPosition());
+            UpdateButtons(mousePosition);
+            UpdateMouseCursor(mousePosition);
         }
 
         TextComponent TextComponentBuilder(string text) => new TextComponent(Scene.GetGameFont("MainText"), text, color: Color.Black);
 
-        bool IsMenuButtonPressed(MenuButton menuButton, Point mousePosition)
+        bool IsMenuButtonIntersects(MenuButton menuButton, Point mousePosition)
         {
             var boundingBoxMouse = new Rectangle(mousePosition, Point.Zero);
+            return _buttonsData.Any(_ => boundingBoxMouse.Intersects(_.BoundingBox) && _.MenuButton == menuButton);
+        }
 
-            return _buttonBoundingBoxes.Any(_ => boundingBoxMouse.Intersects(_.Value) && _.Key == menuButton)
-                  && Scene.MouseInputManager.IsMouseButtonPressed(Curupira2D.Input.MouseButton.Left);
+        bool IsMenuButtonPressed(MenuButton menuButton, Point mousePosition)
+            => IsMenuButtonIntersects(menuButton, mousePosition) && Scene.MouseInputManager.IsMouseButtonPressed(Curupira2D.Input.MouseButton.Left);
+
+        void UpdateButtons(Point mousePosition)
+        {
+            // Actions
+            if (IsMenuButtonPressed(MenuButton.Start, mousePosition))
+                Scene.GameCore.SetScene<GameSceneLevel01>();
+
+            if (IsMenuButtonPressed(MenuButton.Ranking, mousePosition))
+                Scene.SetCleanColor(Color.Green);
+
+            if (IsMenuButtonPressed(MenuButton.Quit, mousePosition))
+                Scene.GameCore.Exit();
+
+            // Animations
+            foreach (var buttonData in _buttonsData)
+            {
+                if (IsMenuButtonIntersects(buttonData.MenuButton, mousePosition))
+                    buttonData.Component.Scale = new Vector2(1.1f);
+                else
+                    buttonData.Component.Scale = Vector2.One;
+            }
         }
 
         void UpdateMouseCursor(Point mousePosition)
         {
             var boundingBoxMouse = new Rectangle(mousePosition, Point.Zero);
-
             _mouseCursorEntity.SetPosition(Scene.PositionToScene(mousePosition));
 
-            if (_buttonBoundingBoxes.Any(_ => boundingBoxMouse.Intersects(_.Value)))
+            if (_buttonsData.Any(_ => boundingBoxMouse.Intersects(_.BoundingBox)))
                 _mouseCursorSpriteComponent.SourceRectangle = _sourceRectangleHandCursor;
             else
                 _mouseCursorSpriteComponent.SourceRectangle = _sourceRectanglePointerCursor;
@@ -80,6 +103,7 @@ namespace SnakeGame.Systems
         {
             Start,
             Ranking,
+            Quit,
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Curupira2D.ECS;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using SnakeGame.Systems;
 using System.Collections.Generic;
 
@@ -37,6 +38,14 @@ namespace SnakeGame.Scenes
 #endif
 
             base.LoadContent();
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+                GameCore.SetScene<MenuScene>();
+
+            base.Update(gameTime);
         }
 
         protected virtual void ScoreControllerSystem_ScoreChange(object sender, ScoreChangeEventArgs e)
