@@ -6,8 +6,10 @@ using Curupira2D.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using SnakeSurvivalGame.Components;
+using SnakeSurvivalGame.Scenes;
 using System;
 using System.Linq;
+using System.Threading;
 
 namespace SnakeSurvivalGame.Systems
 {
@@ -19,22 +21,36 @@ namespace SnakeSurvivalGame.Systems
         Vector2 direction = SnakeSurvivalGameHelper.RightDirection;
         readonly TimeSpan _snakeSpeed = TimeSpan.FromMilliseconds(100);
         bool _start;
+        Entity _youDieEntity;
 
         public void LoadContent()
         {
+            var spriteFont = Scene.GetGameFont("MainText");
             var startBackgroundEntity = Scene.CreateEntity($"{nameof(_start)}Background")
                 .SetPosition(Scene.ScreenCenter)
                 .AddComponent(new SpriteComponent(Scene.GameCore.GraphicsDevice.CreateTextureRectangle(Scene.ScreenSize, Color.Gray * 0.8f), layerDepth: .9f));
 
             Scene.CreateEntity(nameof(_start))
                 .SetPosition(Scene.ScreenCenter)
-                .AddComponent(new TextComponent(Scene.GetGameFont("MainText"), $"{Scene.Title}\nPress\nSPACE\nto\nStart!", color: Color.Black, drawInUICamera: false, layerDepth: 1f))
+                .AddComponent(new TextComponent(spriteFont, $"{Scene.Title}\n   Press\n   SPACE\n       to\n   Start!", color: Color.Black, drawInUICamera: false, layerDepth: 1f))
                 .AddChild(startBackgroundEntity);
+
+            _youDieEntity = Scene.CreateEntity(nameof(_youDieEntity))
+                .SetPosition(Scene.ScreenCenter)
+                .AddComponent(new TextComponent(spriteFont, $"YOU DIE!", color: Color.Red, drawInUICamera: false, layerDepth: 1f))
+                .SetActive(false);
         }
 
         public void Update()
         {
             var keyboardState = Keyboard.GetState();
+
+            if (_youDieEntity.Active)
+            {
+                Thread.Sleep(3000);
+                Scene.GameCore.SetScene(new RankingScene(true, ScoreControllerSystem.Score));
+                return;
+            }
 
             if (!_start)
             {
@@ -92,11 +108,10 @@ namespace SnakeSurvivalGame.Systems
                     .GetEntities(SnakeSurvivalGameHelper.BlockGroupName)
                     .Select(_ => _.Transform.Position);
 
+                // YOU DIE!
                 if (snakePartPositions.Any(_ => Vector2.Distance(_, snakeHeadEntity.Transform.Position) <= 0f)
                     || Scene.PositionIntersectWithAnyBlockEntity(snakeHeadEntity.Transform.Position))
-                    Scene.SetCleanColor(Color.Red);
-                else
-                    Scene.SetCleanColor(Color.LightGray);
+                    _youDieEntity.SetActive(true);
 
                 #region Out of screen
                 if (snakeHeadEntity.Transform.Position.X > Scene.ScreenWidth)

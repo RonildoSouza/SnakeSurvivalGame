@@ -3,6 +3,7 @@ using Curupira2D.ECS.Components.Drawables;
 using Curupira2D.ECS.Systems;
 using Curupira2D.ECS.Systems.Attributes;
 using Microsoft.Xna.Framework;
+using Myra.Graphics2D.UI;
 using SnakeSurvivalGame.Scenes;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,15 @@ namespace SnakeSurvivalGame.Systems
         Rectangle _sourceRectangleHandCursor;
         SpriteComponent _mouseCursorSpriteComponent;
         Entity _mouseCursorEntity;
+
+        // Myra
+        readonly Desktop _desktop;
+        bool _quitClicked;
+
+        public MenuSystem(Desktop desktop)
+        {
+            _desktop = desktop;
+        }
 
         public void LoadContent()
         {
@@ -49,6 +59,9 @@ namespace SnakeSurvivalGame.Systems
 
         public void Update()
         {
+            if (_quitClicked)
+                return;
+
             var mousePosition = Scene.MouseInputManager.GetPosition();
 
             UpdateButtons(mousePosition);
@@ -73,10 +86,26 @@ namespace SnakeSurvivalGame.Systems
                 Scene.GameCore.SetScene<GameSceneLevel01>();
 
             if (IsMenuButtonPressed(MenuButton.Ranking, mousePosition))
-                Scene.SetCleanColor(Color.Green);
+                Scene.GameCore.SetScene(new RankingScene(true, 10000));
 
-            if (IsMenuButtonPressed(MenuButton.Quit, mousePosition))
-                Scene.GameCore.Exit();
+            if (!_quitClicked && IsMenuButtonPressed(MenuButton.Quit, mousePosition))
+            {
+                _quitClicked = true;
+                Scene.GameCore.IsMouseVisible = true;
+                _mouseCursorEntity.SetActive(false);
+
+                Scene.ShowConfirmDialog(
+                    title: "Quit?",
+                    message: "Would you like to quit?",
+                    yesAction: () => Scene.GameCore.Exit(),
+                    noAction: () =>
+                    {
+                        _quitClicked = false;
+                        Scene.GameCore.IsMouseVisible = false;
+                        _mouseCursorEntity.SetActive(true);
+                    },
+                    desktop: _desktop);
+            }
 
             // Animations
             foreach (var buttonData in _buttonsData)

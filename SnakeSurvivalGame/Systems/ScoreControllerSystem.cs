@@ -10,15 +10,16 @@ namespace SnakeSurvivalGame.Systems
     [RequiredComponent(typeof(ScoreControllerSystem), typeof(TextComponent))]
     public sealed class ScoreControllerSystem : Curupira2D.ECS.System, ILoadable
     {
-        static int _score = 0;
         const string scoreFormatText = "Score: {0}";
         TextComponent _scoreTextComponent;
+
+        public static int Score { get; private set; } = 0;
 
         public event EventHandler<ScoreChangeEventArgs> ScoreChange;
 
         public void LoadContent()
         {
-            var scoreText = string.Format(scoreFormatText, _score);
+            var scoreText = string.Format(scoreFormatText, Score);
 
             _scoreTextComponent = new TextComponent(Scene.GetGameFont("Score"), scoreText, color: Color.Black);
 
@@ -29,12 +30,12 @@ namespace SnakeSurvivalGame.Systems
 
         public void ChangeScore(object sender, EventArgs e)
         {
-            _score += 50;
-            var scoreText = string.Format(scoreFormatText, _score);
+            Score += 50;
+            var scoreText = string.Format(scoreFormatText, Score);
 
             _scoreTextComponent.Text = scoreText;
 
-            ScoreChange?.Invoke(this, new ScoreChangeEventArgs(_score));
+            ScoreChange?.Invoke(this, new ScoreChangeEventArgs(Score));
         }
     }
 

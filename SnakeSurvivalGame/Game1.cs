@@ -1,4 +1,5 @@
 ﻿using Curupira2D;
+using Myra;
 using SnakeSurvivalGame.Scenes;
 
 namespace SnakeSurvivalGame
@@ -13,6 +14,9 @@ namespace SnakeSurvivalGame
 
         protected override void LoadContent()
         {
+            // Myra
+            MyraEnvironment.Game = this;
+
             SetScene<MenuScene>();
 
             base.LoadContent();

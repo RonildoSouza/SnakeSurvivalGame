@@ -1,6 +1,7 @@
 ﻿using Curupira2D.ECS;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Myra.Graphics2D.UI;
 using SnakeSurvivalGame.Systems;
 using System.Collections.Generic;
 
@@ -12,6 +13,10 @@ namespace SnakeSurvivalGame.Scenes
         FruitControllerSystem _fruitControllerSystem;
         ScoreControllerSystem _scoreControllerSystem;
         IList<Vector2> _blocksPosition;
+
+        // Myra
+        Desktop _desktop;
+        bool _escapePressed;
 
         public GameSceneLevelBase NextGameSceneLevel { get; private set; }
         protected int Score { get; set; }
@@ -37,15 +42,42 @@ namespace SnakeSurvivalGame.Scenes
             AddSystem<DebugSystem>();
 #endif
 
+            _desktop = new Desktop();
+
             base.LoadContent();
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-                GameCore.SetScene<MenuScene>();
+            KeyboardInputManager.Begin();
 
-            base.Update(gameTime);
+            if (!_escapePressed && KeyboardInputManager.IsKeyPressed(Keys.Escape))
+            {
+                _escapePressed = true;
+                GameCore.IsMouseVisible = true;
+
+                this.ShowConfirmDialog(
+                    title: "Menu?",
+                    message: "Would you like to return to menu?",
+                    yesAction: () => GameCore.SetScene<MenuScene>(),
+                    noAction: () =>
+                    {
+                        _escapePressed = false;
+                        GameCore.IsMouseVisible = false;
+                    },
+                    desktop: _desktop);
+            }
+
+            KeyboardInputManager.End();
+
+            if (!_escapePressed)
+                base.Update(gameTime);
+        }
+
+        public override void Draw()
+        {
+            base.Draw();
+            _desktop.Render();
         }
 
         protected virtual void ScoreControllerSystem_ScoreChange(object sender, ScoreChangeEventArgs e)

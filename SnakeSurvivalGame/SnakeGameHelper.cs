@@ -2,6 +2,7 @@
 using Curupira2D.ECS.Components.Drawables;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Myra.Graphics2D.UI;
 using SnakeSurvivalGame.Components;
 using System;
 using System.Collections.Generic;
@@ -95,6 +96,43 @@ namespace SnakeSurvivalGame
         {
             var spriteFont = scene.GameCore.Content.Load<SpriteFont>($"Fonts/{fontName}");
             return spriteFont;
+        }
+
+        internal static void ShowConfirmDialog(this Scene scene, string title, string message, Action yesAction, Action noAction, Desktop desktop)
+        {
+            var dialog = Dialog.CreateMessageBox(title, message);
+            dialog.ButtonOk.Text = "Yes";
+            dialog.ButtonOk.Width = 100;
+            dialog.ButtonOk.Height = 30;
+            dialog.ButtonOk.ContentHorizontalAlignment = HorizontalAlignment.Center;
+            dialog.ButtonOk.ContentVerticalAlignment = VerticalAlignment.Center;
+
+            dialog.ButtonCancel.Text = "No";
+            dialog.ButtonCancel.Width = 100;
+            dialog.ButtonCancel.Height = 30;
+            dialog.ButtonCancel.ContentHorizontalAlignment = HorizontalAlignment.Center;
+            dialog.ButtonCancel.ContentVerticalAlignment = VerticalAlignment.Center;
+
+            dialog.CloseButton.Visible = false;
+            dialog.Width = Convert.ToInt32(scene.ScreenWidth * 0.8f);
+            dialog.Height = Convert.ToInt32(scene.ScreenHeight * 0.2f);
+            dialog.Padding = new Myra.Graphics2D.Thickness(10, 10);
+            dialog.Content.Margin = new Myra.Graphics2D.Thickness(10, 10);
+            dialog.Content.VerticalAlignment = VerticalAlignment.Center;
+
+            dialog.Closed += (s, a) =>
+            {
+                // Escape or "Cancel"
+                if (!dialog.Result)
+                {
+                    noAction?.Invoke();
+                    return;
+                }
+
+                yesAction?.Invoke();
+            };
+
+            dialog.ShowModal(desktop);
         }
         #endregion
     }
