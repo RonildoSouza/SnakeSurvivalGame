@@ -2,7 +2,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Myra.Graphics2D.UI;
+using SnakeSurvivalGame.Extensions;
 using SnakeSurvivalGame.Systems;
+using System;
 using System.Collections.Generic;
 
 namespace SnakeSurvivalGame.Scenes
@@ -42,7 +44,22 @@ namespace SnakeSurvivalGame.Scenes
             AddSystem<DebugSystem>();
 #endif
 
-            _desktop = new Desktop();
+            var options = new List<(string, Action)>
+            {
+                ("Continue", () =>
+                {
+                    _escapePressed = false;
+                    GameCore.IsMouseVisible = false;
+                    _desktop.Root.Visible = false;
+                }),
+                ("Menu", () => { this.ShowMenuConfirmDialog(_desktop); }),
+                ("Quit", () => { this.ShowQuitConfirmDialog(noAction: null, desktop: _desktop); }),
+            };
+
+            var menuOptions = this.MenuOptionsBuilder("Paused", options, Color.Gray * 0.8f);
+            menuOptions.Visible = false;
+
+            _desktop = new Desktop { Root = menuOptions };
 
             base.LoadContent();
         }
@@ -55,23 +72,13 @@ namespace SnakeSurvivalGame.Scenes
             {
                 _escapePressed = true;
                 GameCore.IsMouseVisible = true;
-
-                this.ShowConfirmDialog(
-                    title: "Menu?",
-                    message: "Would you like to return to menu?",
-                    yesAction: () => GameCore.SetScene<MenuScene>(),
-                    noAction: () =>
-                    {
-                        _escapePressed = false;
-                        GameCore.IsMouseVisible = false;
-                    },
-                    desktop: _desktop);
+                _desktop.Root.Visible = true;
             }
-
-            KeyboardInputManager.End();
 
             if (!_escapePressed)
                 base.Update(gameTime);
+
+            KeyboardInputManager.End();
         }
 
         public override void Draw()
