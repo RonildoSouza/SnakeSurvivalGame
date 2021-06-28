@@ -37,6 +37,8 @@ namespace SnakeSurvivalGame.Systems
 
             ScoreChange?.Invoke(this, new ScoreChangeEventArgs(Score));
         }
+
+        internal static void CleanScore() => Score = 0;
     }
 
     public class ScoreChangeEventArgs : EventArgs

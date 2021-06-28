@@ -10,12 +10,10 @@ namespace SnakeSurvivalGame.Systems
         public void LoadContent()
         {
             var SnakeSurvivalGameTextures = Scene.GameCore.Content.Load<Texture2D>("Textures/SnakeSurvivalGame");
-            var mouseCursorTextures = Scene.GameCore.Content.Load<Texture2D>("Textures/MouseCursors");
             var serpensRegularTTFData = File.ReadAllBytes($"{Scene.GameCore.Content.RootDirectory}/Fonts/SerpensRegular.ttf");
 
             SnakeSurvivalGameHelper.SetSnakeSurvivalGameTextures(SnakeSurvivalGameTextures);
-            SnakeSurvivalGameHelper.SetMouseCursorTextures(mouseCursorTextures);
-            SnakeSurvivalGameHelper.SetSerpensRegularTTFData(serpensRegularTTFData);
+            SnakeSurvivalGameHelper.SetSerpensRegularTTFData(Scene, serpensRegularTTFData);
         }
     }
 }

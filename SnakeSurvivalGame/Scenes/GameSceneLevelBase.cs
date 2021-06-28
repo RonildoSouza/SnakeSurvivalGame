@@ -21,7 +21,6 @@ namespace SnakeSurvivalGame.Scenes
         bool _escapePressed;
 
         public GameSceneLevelBase NextGameSceneLevel { get; private set; }
-        protected int Score { get; set; }
 
         public override void LoadContent()
         {
@@ -40,6 +39,7 @@ namespace SnakeSurvivalGame.Scenes
             AddSystem(_scoreControllerSystem);
 
             SnakeSurvivalGameHelper.CleanBlockEntityPositions();
+
 #if DEBUG
             AddSystem<DebugSystem>();
 #endif
@@ -92,7 +92,6 @@ namespace SnakeSurvivalGame.Scenes
             if (NextGameSceneLevel == null || e.Score % _scoreToChangeLevel != 0)
                 return;
 
-            NextGameSceneLevel.Score = e.Score;
             GameCore.SetScene(NextGameSceneLevel);
         }
 

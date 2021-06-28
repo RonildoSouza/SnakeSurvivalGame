@@ -56,10 +56,6 @@ namespace SnakeSurvivalGame.Extensions
 
         internal static Panel MenuOptionsBuilder(this Scene scene, string title, IList<(string OptionText, Action OptionClicked)> options, Color backgroundColor)
         {
-            // Ordinary DynamicSpriteFont
-            var ordinaryFontSystem = FontSystemFactory.Create(scene.GameCore.GraphicsDevice);
-            ordinaryFontSystem.AddFont(SnakeSurvivalGameHelper.SerpensRegularTTFData);
-
             var verticalMenu = new VerticalMenu
             {
                 Width = scene.ScreenWidth,
@@ -69,7 +65,7 @@ namespace SnakeSurvivalGame.Extensions
                 VerticalAlignment = VerticalAlignment.Center,
                 LabelHorizontalAlignment = HorizontalAlignment.Center,
                 LabelColor = Color.Black,
-                LabelFont = ordinaryFontSystem.GetFont(72),
+                LabelFont = SnakeSurvivalGameHelper.SerpensRegularTTFFontSystem.GetFont(72),
                 SelectionBackground = new SolidBrush(Color.Gray),
                 SelectionHoverBackground = new SolidBrush(Color.Gray)
             };
@@ -88,7 +84,7 @@ namespace SnakeSurvivalGame.Extensions
             {
                 Text = title,
                 TextColor = Color.Black,
-                Font = ordinaryFontSystem.GetFont(32),
+                Font = SnakeSurvivalGameHelper.SerpensRegularTTFFontSystem.GetFont(32),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 Top = 10,
             };

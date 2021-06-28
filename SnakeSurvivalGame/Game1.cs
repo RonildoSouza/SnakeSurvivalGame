@@ -6,11 +6,19 @@ namespace SnakeSurvivalGame
 {
     public class Game1 : GameCore
     {
+        public Game1()
+            : base(
+                  width: 360,
+                  height: 600,
 #if DEBUG
-        public Game1() : base(360, 600, true, true) { }
+                  debugActive: true,
 #else
-        public Game1() : base(360, 600, false, true) { }
+                  debugActive: false, 
 #endif
+                  disabledExit: true)
+        {
+            Window.IsBorderless = false;
+        }
 
         protected override void LoadContent()
         {

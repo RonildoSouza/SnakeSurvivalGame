@@ -1,5 +1,6 @@
 ﻿using Curupira2D.ECS;
 using Curupira2D.ECS.Components.Drawables;
+using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SnakeSurvivalGame.Components;
@@ -29,12 +30,17 @@ namespace SnakeSurvivalGame
         internal static Texture2D SnakeSurvivalGameTextures { get; private set; }
         internal static Texture2D MouseCursorTextures { get; private set; }
         internal static byte[] SerpensRegularTTFData { get; private set; }
+        internal static FontSystem SerpensRegularTTFFontSystem { get; private set; }
 
         internal static void SetSnakeSurvivalGameTextures(Texture2D gameTextures) => SnakeSurvivalGameTextures = gameTextures;
 
-        internal static void SetMouseCursorTextures(Texture2D gameTextures) => MouseCursorTextures = gameTextures;
+        internal static void SetSerpensRegularTTFData(Scene scene, byte[] serpensRegularTTFData)
+        {
+            SerpensRegularTTFData = serpensRegularTTFData;
 
-        internal static void SetSerpensRegularTTFData(byte[] serpensRegularTTFData) => SerpensRegularTTFData = serpensRegularTTFData;
+            SerpensRegularTTFFontSystem = FontSystemFactory.Create(scene.GameCore.GraphicsDevice);
+            SerpensRegularTTFFontSystem.AddFont(SerpensRegularTTFData);
+        }
 
         internal static Rectangle GetSnakeTextureSource(SnakeTexture snakeTexture)
         {
@@ -45,16 +51,6 @@ namespace SnakeSurvivalGame
                 SnakeTexture.Fruit => new Rectangle((int)PixelSize, 0, (int)PixelSize, (int)PixelSize),
                 SnakeTexture.Mouse => new Rectangle((int)PixelSize * 2, 0, (int)PixelSize, (int)PixelSize),
                 SnakeTexture.Block => new Rectangle(0, (int)PixelSize, (int)PixelSize * 3, (int)PixelSize * 3),
-                _ => Rectangle.Empty,
-            };
-        }
-
-        internal static Rectangle GetMouseCursorTextureSource(MouseCursorTexture mouseCursorTexture)
-        {
-            return mouseCursorTexture switch
-            {
-                MouseCursorTexture.Pointer => new Rectangle(0, 0, 15, (int)PixelSize),
-                MouseCursorTexture.Hand => new Rectangle(15, 0, 20, (int)PixelSize),
                 _ => Rectangle.Empty,
             };
         }
@@ -79,7 +75,7 @@ namespace SnakeSurvivalGame
 
         internal static bool PositionIntersectWithAnyBlockEntity(this Scene scene, Vector2 position)
         {
-            if (_blockEntityPositions == null)
+            if (_blockEntityPositions == null || !_blockEntityPositions.Any())
                 _blockEntityPositions = scene.GetEntities(BlockGroupName).Select(_ => _.Transform.Position);
 
             return _blockEntityPositions.Any(_ =>
@@ -108,11 +104,5 @@ namespace SnakeSurvivalGame
         Fruit,
         Mouse,
         Block
-    }
-
-    internal enum MouseCursorTexture
-    {
-        Pointer,
-        Hand,
     }
 }

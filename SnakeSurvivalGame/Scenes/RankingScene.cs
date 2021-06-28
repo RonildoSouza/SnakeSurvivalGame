@@ -1,7 +1,10 @@
 ﻿using Curupira2D.ECS;
+using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Myra.Graphics2D.UI;
+using SnakeSurvivalGame.Infrastructure;
+using SnakeSurvivalGame.Systems;
 using System;
 
 namespace SnakeSurvivalGame.Scenes
@@ -12,6 +15,9 @@ namespace SnakeSurvivalGame.Scenes
         Desktop _desktop;
         bool _showInputNameDialog;
         readonly int? _score;
+        DynamicSpriteFont _dynamicSpriteFont;
+
+        RankingService _rankingService;
 
         public RankingScene(bool showInputNameDialog, int? score = null)
         {
@@ -22,6 +28,84 @@ namespace SnakeSurvivalGame.Scenes
         public override void LoadContent()
         {
             GameCore.IsMouseVisible = true;
+            _rankingService = new RankingService(this);
+            _desktop = new Desktop();
+            _dynamicSpriteFont = SnakeSurvivalGameHelper.SerpensRegularTTFFontSystem.GetFont(20);
+
+            var rankings = _rankingService.GetAll();
+
+            var grid = new Grid();
+
+            // Set partitioning configuration
+            grid.ColumnsProportions.Add(new Proportion(ProportionType.Part, 25));
+            grid.ColumnsProportions.Add(new Proportion(ProportionType.Part, 50));
+            grid.ColumnsProportions.Add(new Proportion(ProportionType.Part, 25));
+            grid.RowsProportions.Add(new Proportion());
+            grid.RowsProportions.Add(new Proportion());
+
+            var titleLabel = new Label
+            {
+                Text = "Ranking",
+                TextColor = Color.Black,
+                Font = SnakeSurvivalGameHelper.SerpensRegularTTFFontSystem.GetFont(32),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Padding = new Myra.Graphics2D.Thickness(0, 20),
+                GridColumnSpan = 3
+            };
+
+            grid.Widgets.Add(titleLabel);
+
+            var verticalStackPanel0 = new VerticalStackPanel
+            {
+                GridRow = 1,
+                GridColumn = 0,
+            };
+            var verticalStackPanel1 = new VerticalStackPanel
+            {
+                GridRow = 1,
+                GridColumn = 1,
+            };
+            var verticalStackPanel2 = new VerticalStackPanel
+            {
+                GridRow = 1,
+                GridColumn = 2,
+            };
+
+            for (int pos = 1; pos <= rankings.Count; pos++)
+            {
+                var ranking = rankings[pos - 1];
+
+                verticalStackPanel0.Widgets.Add(new Label()
+                {
+                    TextColor = Color.Black,
+                    Text = $"{pos}",
+                    Font = _dynamicSpriteFont,
+                    HorizontalAlignment = HorizontalAlignment.Center
+                });
+
+                verticalStackPanel1.Widgets.Add(new Label()
+                {
+                    TextColor = Color.Black,
+                    Text = $"{ranking.PlayerName}",
+                    Font = _dynamicSpriteFont,
+                    HorizontalAlignment = HorizontalAlignment.Center
+                });
+
+                verticalStackPanel2.Widgets.Add(new Label()
+                {
+                    TextColor = Color.Black,
+                    Text = $"{ranking.PlayerScore}",
+                    Font = _dynamicSpriteFont,
+                    HorizontalAlignment = HorizontalAlignment.Center
+                });
+            }
+
+            grid.Widgets.Add(verticalStackPanel0);
+            grid.Widgets.Add(verticalStackPanel1);
+            grid.Widgets.Add(verticalStackPanel2);
+
+            _desktop.Root = grid;
 
             if (_showInputNameDialog)
                 ShowInputNameDialog();
@@ -36,9 +120,9 @@ namespace SnakeSurvivalGame.Scenes
             if (!_showInputNameDialog && KeyboardInputManager.IsKeyPressed(Keys.Escape))
                 GameCore.SetScene<MenuScene>();
 
-            KeyboardInputManager.End();
-
             base.Update(gameTime);
+
+            KeyboardInputManager.End();
         }
 
         public override void Draw()
@@ -49,20 +133,18 @@ namespace SnakeSurvivalGame.Scenes
 
         void ShowInputNameDialog()
         {
-            _desktop = new Desktop();
-
             // Create dialog content
             var horizontalStackPanel = new HorizontalStackPanel { Spacing = 8 };
             horizontalStackPanel.Proportions.Add(new Proportion(ProportionType.Fill));
 
-            var nameTextBox = new TextBox
+            var playerNameTextBox = new TextBox
             {
                 HintText = "Enter your name here!",
                 Height = 50,
                 TextVerticalAlignment = VerticalAlignment.Center
             };
 
-            horizontalStackPanel.Widgets.Add(nameTextBox);
+            horizontalStackPanel.Widgets.Add(playerNameTextBox);
 
             // Create dialog
             var inputNameDialog = new Dialog();
@@ -88,7 +170,14 @@ namespace SnakeSurvivalGame.Scenes
 
             inputNameDialog.Closed += (s, a) =>
             {
+                if (!inputNameDialog.Result)
+                    return;
+
                 _showInputNameDialog = false;
+
+                _rankingService.Add(playerNameTextBox.Text, _score.Value);
+
+                ScoreControllerSystem.CleanScore();
             };
 
             inputNameDialog.ShowModal(_desktop);

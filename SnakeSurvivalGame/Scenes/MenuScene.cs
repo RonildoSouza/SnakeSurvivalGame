@@ -30,7 +30,7 @@ namespace SnakeSurvivalGame.Scenes
                     GameCore.SetScene<GameSceneLevel01>();
                     GameCore.IsMouseVisible = false;
                 }),
-                ("Ranking", () => { GameCore.SetScene(new RankingScene(true, 10000)); }),
+                ("Ranking", () => { GameCore.SetScene(new RankingScene(false)); }),
                 ("Quit", () =>{ this.ShowQuitConfirmDialog(noAction: null, desktop: _desktop); }),
             };
 
