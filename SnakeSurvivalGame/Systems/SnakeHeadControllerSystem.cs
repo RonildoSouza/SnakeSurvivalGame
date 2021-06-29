@@ -48,7 +48,7 @@ namespace SnakeSurvivalGame.Systems
             if (_youDieEntity.Active)
             {
                 Thread.Sleep(3000);
-                Scene.GameCore.SetScene(new RankingScene(true, ScoreControllerSystem.Score));
+                Scene.GameCore.SetScene(new RankingScene(true));
                 return;
             }
 
@@ -66,25 +66,25 @@ namespace SnakeSurvivalGame.Systems
             var snakeHeadEntity = Scene.GetEntity(SnakeSurvivalGameHelper.SnakeHeadId);
             var snakePartComponentSnakeHead = snakeHeadEntity.GetComponent<SnakePartComponent>();
 
-            if (keyboardState.IsKeyDown(Keys.Left) && !_oldKeyboardState.IsKeyDown(Keys.Right))
+            if (keyboardState.IsKeyDown(Keys.Left) && !_oldKeyboardState.IsKeyDown(Keys.Right) && snakePartComponentSnakeHead.NewDirection != SnakeSurvivalGameHelper.RightDirection)
             {
                 direction = SnakeSurvivalGameHelper.LeftDirection;
                 _oldKeyboardState = keyboardState;
             }
 
-            if (keyboardState.IsKeyDown(Keys.Up) && !_oldKeyboardState.IsKeyDown(Keys.Down))
+            if (keyboardState.IsKeyDown(Keys.Up) && !_oldKeyboardState.IsKeyDown(Keys.Down) && snakePartComponentSnakeHead.NewDirection != SnakeSurvivalGameHelper.DownDirection)
             {
                 direction = SnakeSurvivalGameHelper.UpDirection;
                 _oldKeyboardState = keyboardState;
             }
 
-            if (keyboardState.IsKeyDown(Keys.Right) && !_oldKeyboardState.IsKeyDown(Keys.Left))
+            if (keyboardState.IsKeyDown(Keys.Right) && !_oldKeyboardState.IsKeyDown(Keys.Left) && snakePartComponentSnakeHead.NewDirection != SnakeSurvivalGameHelper.LeftDirection)
             {
                 direction = SnakeSurvivalGameHelper.RightDirection;
                 _oldKeyboardState = keyboardState;
             }
 
-            if (keyboardState.IsKeyDown(Keys.Down) && !_oldKeyboardState.IsKeyDown(Keys.Up))
+            if (keyboardState.IsKeyDown(Keys.Down) && !_oldKeyboardState.IsKeyDown(Keys.Up) && snakePartComponentSnakeHead.NewDirection != SnakeSurvivalGameHelper.UpDirection)
             {
                 direction = SnakeSurvivalGameHelper.DownDirection;
                 _oldKeyboardState = keyboardState;

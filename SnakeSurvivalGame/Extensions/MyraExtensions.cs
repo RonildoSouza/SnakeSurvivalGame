@@ -1,5 +1,4 @@
 ﻿using Curupira2D.ECS;
-using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Myra.Graphics2D.Brushes;
 using Myra.Graphics2D.UI;
@@ -38,6 +37,7 @@ namespace SnakeSurvivalGame.Extensions
             dialog.Padding = new Myra.Graphics2D.Thickness(10, 10);
             dialog.Content.Margin = new Myra.Graphics2D.Thickness(10, 10);
             dialog.Content.VerticalAlignment = VerticalAlignment.Center;
+            dialog.DragDirection = DragDirection.None;
 
             dialog.Closed += (s, a) =>
             {
@@ -99,7 +99,11 @@ namespace SnakeSurvivalGame.Extensions
                 Top = -10,
             };
 
-            var panel = new Panel { Background = new SolidBrush(backgroundColor) };
+            var panel = new Panel
+            {
+                Background = new SolidBrush(backgroundColor),
+                DragDirection = DragDirection.None
+            };
 
             if (!string.IsNullOrEmpty(title))
                 panel.Widgets.Add(titleLabel);

@@ -14,15 +14,13 @@ namespace SnakeSurvivalGame.Scenes
         // Myra
         Desktop _desktop;
         bool _showInputNameDialog;
-        readonly int? _score;
         DynamicSpriteFont _dynamicSpriteFont;
 
         RankingService _rankingService;
 
-        public RankingScene(bool showInputNameDialog, int? score = null)
+        public RankingScene(bool showInputNameDialog = false)
         {
-            _showInputNameDialog = showInputNameDialog;
-            _score = score;
+            _showInputNameDialog = showInputNameDialog && ScoreControllerSystem.Score > 0;
         }
 
         public override void LoadContent()
@@ -32,83 +30,10 @@ namespace SnakeSurvivalGame.Scenes
             _desktop = new Desktop();
             _dynamicSpriteFont = SnakeSurvivalGameHelper.SerpensRegularTTFFontSystem.GetFont(20);
 
-            var rankings = _rankingService.GetAll();
-
-            var grid = new Grid();
-
-            // Set partitioning configuration
-            grid.ColumnsProportions.Add(new Proportion(ProportionType.Part, 25));
-            grid.ColumnsProportions.Add(new Proportion(ProportionType.Part, 50));
-            grid.ColumnsProportions.Add(new Proportion(ProportionType.Part, 25));
-            grid.RowsProportions.Add(new Proportion());
-            grid.RowsProportions.Add(new Proportion());
-
-            var titleLabel = new Label
-            {
-                Text = "Ranking",
-                TextColor = Color.Black,
-                Font = SnakeSurvivalGameHelper.SerpensRegularTTFFontSystem.GetFont(32),
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center,
-                Padding = new Myra.Graphics2D.Thickness(0, 20),
-                GridColumnSpan = 3
-            };
-
-            grid.Widgets.Add(titleLabel);
-
-            var verticalStackPanel0 = new VerticalStackPanel
-            {
-                GridRow = 1,
-                GridColumn = 0,
-            };
-            var verticalStackPanel1 = new VerticalStackPanel
-            {
-                GridRow = 1,
-                GridColumn = 1,
-            };
-            var verticalStackPanel2 = new VerticalStackPanel
-            {
-                GridRow = 1,
-                GridColumn = 2,
-            };
-
-            for (int pos = 1; pos <= rankings.Count; pos++)
-            {
-                var ranking = rankings[pos - 1];
-
-                verticalStackPanel0.Widgets.Add(new Label()
-                {
-                    TextColor = Color.Black,
-                    Text = $"{pos}",
-                    Font = _dynamicSpriteFont,
-                    HorizontalAlignment = HorizontalAlignment.Center
-                });
-
-                verticalStackPanel1.Widgets.Add(new Label()
-                {
-                    TextColor = Color.Black,
-                    Text = $"{ranking.PlayerName}",
-                    Font = _dynamicSpriteFont,
-                    HorizontalAlignment = HorizontalAlignment.Center
-                });
-
-                verticalStackPanel2.Widgets.Add(new Label()
-                {
-                    TextColor = Color.Black,
-                    Text = $"{ranking.PlayerScore}",
-                    Font = _dynamicSpriteFont,
-                    HorizontalAlignment = HorizontalAlignment.Center
-                });
-            }
-
-            grid.Widgets.Add(verticalStackPanel0);
-            grid.Widgets.Add(verticalStackPanel1);
-            grid.Widgets.Add(verticalStackPanel2);
-
-            _desktop.Root = grid;
-
             if (_showInputNameDialog)
                 ShowInputNameDialog();
+            else
+                RankingGridBuilder();
 
             base.LoadContent();
         }
@@ -147,12 +72,11 @@ namespace SnakeSurvivalGame.Scenes
             horizontalStackPanel.Widgets.Add(playerNameTextBox);
 
             // Create dialog
-            var inputNameDialog = new Dialog();
-
-            if (_score.HasValue)
-                inputNameDialog.Title = $"Your Score: {_score}";
-
-            inputNameDialog.Content = horizontalStackPanel;
+            var inputNameDialog = new Dialog
+            {
+                Title = $"Your Score: {ScoreControllerSystem.Score}",
+                Content = horizontalStackPanel
+            };
 
             inputNameDialog.ButtonOk.Text = "Save";
             inputNameDialog.ButtonOk.Width = 100;
@@ -167,20 +91,92 @@ namespace SnakeSurvivalGame.Scenes
             inputNameDialog.Padding = new Myra.Graphics2D.Thickness(10, 10);
             inputNameDialog.Content.Margin = new Myra.Graphics2D.Thickness(10, 10);
             inputNameDialog.Content.VerticalAlignment = VerticalAlignment.Center;
+            inputNameDialog.CloseKey = Keys.None;
+            inputNameDialog.DragDirection = DragDirection.None;
 
             inputNameDialog.Closed += (s, a) =>
             {
-                if (!inputNameDialog.Result)
+                if (!inputNameDialog.Result || string.IsNullOrEmpty(playerNameTextBox.Text?.Trim()))
+                {
+                    playerNameTextBox.HintText = "TYPE YOUR NAME HERE!";
+                    inputNameDialog.Show(_desktop);
                     return;
+                }
 
                 _showInputNameDialog = false;
-
-                _rankingService.Add(playerNameTextBox.Text, _score.Value);
+                _rankingService.Add(playerNameTextBox.Text.Trim(), ScoreControllerSystem.Score);
 
                 ScoreControllerSystem.CleanScore();
+                RankingGridBuilder();
             };
 
-            inputNameDialog.ShowModal(_desktop);
+            inputNameDialog.Show(_desktop);
+        }
+
+        void RankingGridBuilder()
+        {
+            var rankings = _rankingService.GetAll();
+            var grid = new Grid();
+
+            grid.ColumnsProportions.Add(new Proportion(ProportionType.Part, 25));
+            grid.ColumnsProportions.Add(new Proportion(ProportionType.Part, 50));
+            grid.ColumnsProportions.Add(new Proportion(ProportionType.Part, 25));
+            grid.RowsProportions.Add(new Proportion());
+            grid.RowsProportions.Add(new Proportion());
+
+            var titleLabel = new Label
+            {
+                Text = "Ranking",
+                TextColor = Color.Black,
+                Font = SnakeSurvivalGameHelper.SerpensRegularTTFFontSystem.GetFont(32),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Padding = new Myra.Graphics2D.Thickness(0, 20),
+                GridColumnSpan = 3
+            };
+
+            grid.Widgets.Add(titleLabel);
+
+            var verticalStackPanel0 = new VerticalStackPanel { GridRow = 1, GridColumn = 0, };
+            var verticalStackPanel1 = new VerticalStackPanel { GridRow = 1, GridColumn = 1, };
+            var verticalStackPanel2 = new VerticalStackPanel { GridRow = 1, GridColumn = 2, };
+
+            // Build labels in vertical stack
+            for (int pos = 1; pos <= rankings.Count; pos++)
+            {
+                var ranking = rankings[pos - 1];
+
+                verticalStackPanel0.Widgets.Add(new Label()
+                {
+                    TextColor = Color.Black,
+                    Text = $"{pos}",
+                    Font = _dynamicSpriteFont,
+                    HorizontalAlignment = HorizontalAlignment.Center
+                });
+
+                verticalStackPanel1.Widgets.Add(new Label()
+                {
+                    TextColor = Color.Black,
+                    Text = ranking.PlayerName.Length > 15 ? ranking.PlayerName.Substring(0, 15) : ranking.PlayerName,
+                    Font = _dynamicSpriteFont,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Wrap = true
+                });
+
+                verticalStackPanel2.Widgets.Add(new Label()
+                {
+                    TextColor = Color.Black,
+                    Text = $"{ranking.PlayerScore}",
+                    Font = _dynamicSpriteFont,
+                    HorizontalAlignment = HorizontalAlignment.Center
+                });
+            }
+
+            grid.Widgets.Add(verticalStackPanel0);
+            grid.Widgets.Add(verticalStackPanel1);
+            grid.Widgets.Add(verticalStackPanel2);
+
+            _desktop.Root = grid;
         }
     }
 }

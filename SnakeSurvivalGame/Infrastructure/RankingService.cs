@@ -20,7 +20,7 @@ namespace SnakeSurvivalGame.Infrastructure
             _scene = scene;
 
             // Initialize
-            _rankings = GetAll().ToArray();
+            _rankings = GetAll().ToList();
         }
 
         public IReadOnlyList<Ranking> Add(string playerName, int playerScore)
@@ -31,13 +31,14 @@ namespace SnakeSurvivalGame.Infrastructure
             {
                 var minScore = _rankings.Min(_ => _.PlayerScore);
                 var lastRanking = _rankings.LastOrDefault(_ => _.PlayerScore == minScore);
+                var index = _rankings.IndexOf(lastRanking);
 
-                _rankings.Remove(lastRanking);
+                _rankings[index] = ranking;
             }
+            else
+                _rankings.Add(ranking);
 
-            _rankings.Add(ranking);
-
-            var rankingsJson = JsonConvert.SerializeObject(_rankings);
+            var rankingsJson = JsonConvert.SerializeObject(_rankings, Formatting.None);
             File.WriteAllText(GetRankingFilePath(), Convert.ToBase64String(Encoding.UTF8.GetBytes(rankingsJson)));
 
             return _rankings.OrderByDescending(_ => _.PlayerScore).Take(MaxRankings).ToList();
@@ -56,6 +57,9 @@ namespace SnakeSurvivalGame.Infrastructure
             return _rankings.OrderByDescending(_ => _.PlayerScore).Take(MaxRankings).ToList();
         }
 
+        /// <summary>
+        /// THIS IS NOT THE BETTER SOLUTION TO SAVE REGISTERS, BUT TO A SIMPLE GAME IT'S OK
+        /// </summary>
         string GetRankingFilePath() => $"{_scene.GameCore.Content.RootDirectory}/Infra/ranking.ss";
     }
 }
