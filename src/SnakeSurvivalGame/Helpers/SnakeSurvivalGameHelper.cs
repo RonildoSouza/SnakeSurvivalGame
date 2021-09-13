@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SnakeSurvivalGame
+namespace SnakeSurvivalGame.Helpers
 {
     internal static class SnakeSurvivalGameHelper
     {

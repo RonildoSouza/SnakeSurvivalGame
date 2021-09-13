@@ -1,6 +1,7 @@
 ﻿using Curupira2D.ECS;
 using Curupira2D.ECS.Systems;
 using Microsoft.Xna.Framework.Graphics;
+using SnakeSurvivalGame.Helpers;
 using System.IO;
 
 namespace SnakeSurvivalGame.Systems

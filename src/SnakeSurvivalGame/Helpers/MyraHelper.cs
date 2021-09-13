@@ -6,9 +6,9 @@ using SnakeSurvivalGame.Scenes;
 using System;
 using System.Collections.Generic;
 
-namespace SnakeSurvivalGame.Extensions
+namespace SnakeSurvivalGame.Helpers
 {
-    internal static class MyraExtensions
+    internal static class MyraHelper
     {
         internal static void ShowQuitConfirmDialog(this Scene scene, Action noAction, Desktop desktop)
             => scene.ShowConfirmDialog("Quit?", "Would you like to quit?", () => scene.GameCore.Exit(), noAction, desktop);

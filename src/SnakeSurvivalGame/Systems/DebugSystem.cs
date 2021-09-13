@@ -1,10 +1,13 @@
-﻿using Curupira2D.ECS;
+﻿#if DEBUG
+
+using Curupira2D.ECS;
 using Curupira2D.ECS.Components.Drawables;
 using Curupira2D.ECS.Systems;
 using Curupira2D.ECS.Systems.Attributes;
 using Curupira2D.GameComponents;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using SnakeSurvivalGame.Helpers;
 using SnakeSurvivalGame.Scenes;
 using System.Collections.Generic;
 using System.Linq;
@@ -81,3 +84,5 @@ namespace SnakeSurvivalGame.Systems
         }
     }
 }
+
+#endif

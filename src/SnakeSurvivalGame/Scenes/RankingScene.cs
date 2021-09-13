@@ -3,6 +3,7 @@ using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Myra.Graphics2D.UI;
+using SnakeSurvivalGame.Helpers;
 using SnakeSurvivalGame.Infrastructure;
 using SnakeSurvivalGame.Systems;
 using System;

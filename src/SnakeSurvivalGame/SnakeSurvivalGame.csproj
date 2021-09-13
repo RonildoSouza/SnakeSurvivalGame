@@ -33,7 +33,7 @@
     <PackageReference Include="Myra" Version="1.2.4" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Curupira2D\src\Curupira2D\Curupira2D.csproj" />
+    <ProjectReference Include="..\..\..\Curupira2D\src\Curupira2D\Curupira2D.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Content\Fonts\FreePixel.ttf">

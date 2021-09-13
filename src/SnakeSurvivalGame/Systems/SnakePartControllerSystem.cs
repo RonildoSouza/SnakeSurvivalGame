@@ -2,6 +2,7 @@
 using Curupira2D.ECS.Systems;
 using Curupira2D.ECS.Systems.Attributes;
 using SnakeSurvivalGame.Components;
+using SnakeSurvivalGame.Helpers;
 using System;
 
 namespace SnakeSurvivalGame.Systems

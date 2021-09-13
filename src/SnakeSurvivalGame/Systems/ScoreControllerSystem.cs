@@ -2,7 +2,9 @@
 using Curupira2D.ECS.Components.Drawables;
 using Curupira2D.ECS.Systems;
 using Curupira2D.ECS.Systems.Attributes;
+using Curupira2D.Extensions;
 using Microsoft.Xna.Framework;
+using SnakeSurvivalGame.Helpers;
 using System;
 
 namespace SnakeSurvivalGame.Systems
@@ -20,12 +22,15 @@ namespace SnakeSurvivalGame.Systems
         public void LoadContent()
         {
             var scoreText = string.Format(scoreFormatText, Score);
-
-            _scoreTextComponent = new TextComponent(Scene.GetGameFont("Score"), scoreText, color: Color.Black);
-
+            _scoreTextComponent = new TextComponent(Scene.GetGameFont("Score"), scoreText, color: Color.Black, layerDepth: 1f);
             Scene.CreateEntity("score")
-                .SetPosition(new Vector2(Scene.ScreenCenter.X * 1.5f, SnakeSurvivalGameHelper.PixelSize * 23.5f))
+                .SetPosition(new Vector2(Scene.ScreenCenter.X * 1.5f, SnakeSurvivalGameHelper.PixelSize * 25.8f))
                 .AddComponent(_scoreTextComponent);
+
+            var scoreBarTexture = Scene.GameCore.GraphicsDevice.CreateTextureRectangle(Scene.ScreenWidth, SnakeSurvivalGameHelper.PixelSize * 2f, Color.Gray * 0.1f);
+            Scene.CreateEntity("scoreBar")
+                .SetPosition(Scene.ScreenCenter.X, Scene.ScreenHeight - SnakeSurvivalGameHelper.PixelSize)
+                .AddComponent(new SpriteComponent(scoreBarTexture, drawInUICamera: true));
         }
 
         public void ChangeScore(object sender, EventArgs e)

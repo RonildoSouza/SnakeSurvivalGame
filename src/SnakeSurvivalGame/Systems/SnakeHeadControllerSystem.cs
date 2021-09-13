@@ -6,10 +6,10 @@ using Curupira2D.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using SnakeSurvivalGame.Components;
+using SnakeSurvivalGame.Helpers;
 using SnakeSurvivalGame.Scenes;
 using System;
 using System.Linq;
-using System.Threading;
 
 namespace SnakeSurvivalGame.Systems
 {
@@ -45,23 +45,14 @@ namespace SnakeSurvivalGame.Systems
         {
             var keyboardState = Keyboard.GetState();
 
-            if (_youDieEntity.Active)
+            if (!_start && keyboardState.IsKeyDown(Keys.Space) && !_oldKeyboardState.IsKeyDown(Keys.Space))
             {
-                Thread.Sleep(3000);
-                Scene.GameCore.SetScene(new RankingScene(true));
-                return;
+                _start = true;
+                Scene.RemoveEntity(nameof(_start));
             }
 
             if (!_start)
-            {
-                if (keyboardState.IsKeyDown(Keys.Space) && !_oldKeyboardState.IsKeyDown(Keys.Space))
-                {
-                    _start = true;
-                    Scene.RemoveEntity(nameof(_start));
-                }
-
                 return;
-            }
 
             var snakeHeadEntity = Scene.GetEntity(SnakeSurvivalGameHelper.SnakeHeadId);
             var snakePartComponentSnakeHead = snakeHeadEntity.GetComponent<SnakePartComponent>();
@@ -111,7 +102,11 @@ namespace SnakeSurvivalGame.Systems
                 // YOU DIE!
                 if (snakePartPositions.Any(_ => Vector2.Distance(_, snakeHeadEntity.Transform.Position) <= 0f)
                     || Scene.PositionIntersectWithAnyBlockEntity(snakeHeadEntity.Transform.Position))
+                {
                     _youDieEntity.SetActive(true);
+                    Scene.PauseUpdatableSystems = true;
+                    Scene.GameCore.SetScene(new RankingScene(true));
+                }
 
                 #region Out of screen
                 if (snakeHeadEntity.Transform.Position.X > Scene.ScreenWidth)
@@ -120,11 +115,11 @@ namespace SnakeSurvivalGame.Systems
                 if (snakeHeadEntity.Transform.Position.X <= -SnakeSurvivalGameHelper.PixelSizeHalf)
                     snakeHeadEntity.SetPosition(Scene.ScreenWidth - SnakeSurvivalGameHelper.PixelSizeHalf, snakeHeadEntity.Transform.Position.Y);
 
-                if (snakeHeadEntity.Transform.Position.Y > Scene.ScreenHeight)
+                if (snakeHeadEntity.Transform.Position.Y > (Scene.ScreenHeight - SnakeSurvivalGameHelper.PixelSize * 2))
                     snakeHeadEntity.SetPosition(snakeHeadEntity.Transform.Position.X, SnakeSurvivalGameHelper.PixelSizeHalf);
 
                 if (snakeHeadEntity.Transform.Position.Y <= -SnakeSurvivalGameHelper.PixelSizeHalf)
-                    snakeHeadEntity.SetPosition(snakeHeadEntity.Transform.Position.X, Scene.ScreenHeight - SnakeSurvivalGameHelper.PixelSizeHalf);
+                    snakeHeadEntity.SetPosition(snakeHeadEntity.Transform.Position.X, Scene.ScreenHeight - SnakeSurvivalGameHelper.PixelSize * 2.5f);
                 #endregion
 
                 _sleepTime = TimeSpan.Zero;

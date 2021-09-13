@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Myra.Graphics2D.Brushes;
 using Myra.Graphics2D.UI;
-using SnakeSurvivalGame.Extensions;
+using SnakeSurvivalGame.Helpers;
 using SnakeSurvivalGame.Infrastructure;
 using SnakeSurvivalGame.Systems;
 using System;

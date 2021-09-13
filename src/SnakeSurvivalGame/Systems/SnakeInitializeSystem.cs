@@ -3,6 +3,7 @@ using Curupira2D.ECS.Components.Drawables;
 using Curupira2D.ECS.Systems;
 using Microsoft.Xna.Framework;
 using SnakeSurvivalGame.Components;
+using SnakeSurvivalGame.Helpers;
 using System.Collections.Generic;
 
 namespace SnakeSurvivalGame.Systems

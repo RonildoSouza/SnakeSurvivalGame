@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Myra.Graphics2D.UI;
-using SnakeSurvivalGame.Extensions;
+using SnakeSurvivalGame.Helpers;
 using SnakeSurvivalGame.Systems;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ namespace SnakeSurvivalGame.Scenes
 {
     public abstract class GameSceneLevelBase : Scene
     {
-        readonly int _scoreToChangeLevel = 1000;
+        readonly int _scoreToChangeLevel = 150;
         FruitControllerSystem _fruitControllerSystem;
         ScoreControllerSystem _scoreControllerSystem;
         IList<Vector2> _blocksPosition;

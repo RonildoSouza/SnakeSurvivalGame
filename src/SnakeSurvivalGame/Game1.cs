@@ -9,7 +9,7 @@ namespace SnakeSurvivalGame
         public Game1()
             : base(
                   width: 360,
-                  height: 600,
+                  height: 648,
 #if DEBUG
                   debugActive: true,
 #else

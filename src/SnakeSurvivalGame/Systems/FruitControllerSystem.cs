@@ -3,6 +3,7 @@ using Curupira2D.ECS.Components.Drawables;
 using Curupira2D.ECS.Systems;
 using Curupira2D.ECS.Systems.Attributes;
 using Microsoft.Xna.Framework;
+using SnakeSurvivalGame.Helpers;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,6 +31,7 @@ namespace SnakeSurvivalGame.Systems
         public void Update()
         {
             var snakeHeadEntity = Scene.GetEntity(SnakeSurvivalGameHelper.SnakeHeadId);
+            var scoreBarEntity = Scene.GetEntity("scoreBar");
 
             // Did the snake eat fruit?
             if (snakeHeadEntity.Transform.Position == _fruitEntity.Transform.Position)
@@ -41,7 +43,8 @@ namespace SnakeSurvivalGame.Systems
             }
 
             // Does fruit position intersect with any block?
-            if (Scene.PositionIntersectWithAnyBlockEntity(_fruitEntity.Transform.Position))
+            if (Scene.PositionIntersectWithAnyBlockEntity(_fruitEntity.Transform.Position)
+                || Vector2.Distance(scoreBarEntity.Transform.Position, _fruitEntity.Transform.Position) == 0)
                 UpdateFruitPosition();
         }
 
