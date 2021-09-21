@@ -2,6 +2,7 @@
 using Curupira2D.ECS.Components.Drawables;
 using Curupira2D.ECS.Systems;
 using Curupira2D.ECS.Systems.Attributes;
+using Curupira2D.Extensions;
 using Microsoft.Xna.Framework;
 using SnakeSurvivalGame.Helpers;
 using System;
@@ -23,61 +24,35 @@ namespace SnakeSurvivalGame.Systems
             var fruitSource = SnakeSurvivalGameHelper.GetSnakeTextureSource(SnakeTexture.Fruit);
             var startPosition = new Vector2(SnakeSurvivalGameHelper.PixelSize * 10.5f, SnakeSurvivalGameHelper.PixelSize * 12.5f);
 
-            _fruitEntity = Scene.CreateEntity(SnakeSurvivalGameHelper.FruitId)
-                .SetPosition(startPosition)
+            _fruitEntity = Scene.CreateEntity(SnakeSurvivalGameHelper.FruitId, startPosition)
                 .AddComponent(new SpriteComponent(SnakeSurvivalGameHelper.SnakeSurvivalGameTextures, sourceRectangle: fruitSource));
         }
 
         public void Update()
         {
             var snakeHeadEntity = Scene.GetEntity(SnakeSurvivalGameHelper.SnakeHeadId);
-            var scoreBarEntity = Scene.GetEntity("scoreBar");
 
             // Did the snake eat fruit?
-            if (snakeHeadEntity.Transform.Position == _fruitEntity.Transform.Position)
+            if (snakeHeadEntity.Position == _fruitEntity.Position)
             {
-                UpdateFruitPosition();
                 AddSnakePart();
+                UpdateFruitPosition();
 
                 SnakeEatFruit?.Invoke(this, null);
             }
-
-            // Does fruit position intersect with any block?
-            if (Scene.PositionIntersectWithAnyBlockEntity(_fruitEntity.Transform.Position)
-                || Vector2.Distance(scoreBarEntity.Transform.Position, _fruitEntity.Transform.Position) == 0)
-                UpdateFruitPosition();
         }
 
         void UpdateFruitPosition()
         {
-            // Get all snake part positions
-            var snakePartPositions = Scene
-                .GetEntities(_ => MatchComponents(_))
-                .Select(_ => _.Transform.Position);
+            var x = SnakeSurvivalGameHelper.PixelSize *
+                (_random.Value.Next(0, (Scene.ScreenWidth - 1) / (int)SnakeSurvivalGameHelper.PixelSize) + 0.5f);
+            var y = SnakeSurvivalGameHelper.PixelSize *
+                (_random.Value.Next(0, (Scene.ScreenHeight - 1) / (int)SnakeSurvivalGameHelper.PixelSize) + 0.5f);
 
-            _fruitEntity.SetPosition(GetX(), GetY());
+            _fruitEntity.SetPosition(x, y);
 
-            float GetX()
-            {
-                var x = SnakeSurvivalGameHelper.PixelSize *
-                    (_random.Value.Next(0, (Scene.ScreenWidth - 1) / (int)SnakeSurvivalGameHelper.PixelSize) + 0.5f);
-
-                if (snakePartPositions.Any(_ => _.X == x))
-                    Task.Factory.StartNew(() => x = GetX());
-
-                return x;
-            }
-
-            float GetY()
-            {
-                var y = SnakeSurvivalGameHelper.PixelSize *
-                    (_random.Value.Next(0, (Scene.ScreenHeight - 1) / (int)SnakeSurvivalGameHelper.PixelSize) + 0.5f);
-
-                if (snakePartPositions.Any(_ => _.Y == y))
-                    Task.Factory.StartNew(() => y = GetY());
-
-                return y;
-            }
+            if (_fruitEntity.IsCollidedWithAny(Scene))
+                UpdateFruitPosition();
         }
 
         void AddSnakePart()

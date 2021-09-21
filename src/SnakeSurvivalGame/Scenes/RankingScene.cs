@@ -124,8 +124,9 @@ namespace SnakeSurvivalGame.Scenes
             grid.ColumnsProportions.Add(new Proportion(ProportionType.Part, 25));
             grid.RowsProportions.Add(new Proportion());
             grid.RowsProportions.Add(new Proportion());
+            grid.RowsProportions.Add(new Proportion());
 
-            var titleLabel = new Label
+            var headerLabel = new Label
             {
                 Text = "Ranking",
                 TextColor = Color.Black,
@@ -136,18 +137,18 @@ namespace SnakeSurvivalGame.Scenes
                 GridColumnSpan = 3
             };
 
-            grid.Widgets.Add(titleLabel);
+            grid.Widgets.Add(headerLabel);
 
-            var verticalStackPanel0 = new VerticalStackPanel { GridRow = 1, GridColumn = 0, };
-            var verticalStackPanel1 = new VerticalStackPanel { GridRow = 1, GridColumn = 1, };
-            var verticalStackPanel2 = new VerticalStackPanel { GridRow = 1, GridColumn = 2, };
+            var verticalStackPanelCol0 = new VerticalStackPanel { GridRow = 1, GridColumn = 0, };
+            var verticalStackPanelCol1 = new VerticalStackPanel { GridRow = 1, GridColumn = 1, };
+            var verticalStackPanelCol2 = new VerticalStackPanel { GridRow = 1, GridColumn = 2, };
 
             // Build labels in vertical stack
             for (int pos = 1; pos <= rankings.Count; pos++)
             {
                 var ranking = rankings[pos - 1];
 
-                verticalStackPanel0.Widgets.Add(new Label()
+                verticalStackPanelCol0.Widgets.Add(new Label()
                 {
                     TextColor = Color.Black,
                     Text = $"{pos}",
@@ -155,7 +156,7 @@ namespace SnakeSurvivalGame.Scenes
                     HorizontalAlignment = HorizontalAlignment.Center
                 });
 
-                verticalStackPanel1.Widgets.Add(new Label()
+                verticalStackPanelCol1.Widgets.Add(new Label()
                 {
                     TextColor = Color.Black,
                     Text = ranking.PlayerName.Length > 15 ? ranking.PlayerName.Substring(0, 15) : ranking.PlayerName,
@@ -164,7 +165,7 @@ namespace SnakeSurvivalGame.Scenes
                     Wrap = true
                 });
 
-                verticalStackPanel2.Widgets.Add(new Label()
+                verticalStackPanelCol2.Widgets.Add(new Label()
                 {
                     TextColor = Color.Black,
                     Text = $"{ranking.PlayerScore}",
@@ -173,9 +174,23 @@ namespace SnakeSurvivalGame.Scenes
                 });
             }
 
-            grid.Widgets.Add(verticalStackPanel0);
-            grid.Widgets.Add(verticalStackPanel1);
-            grid.Widgets.Add(verticalStackPanel2);
+            grid.Widgets.Add(verticalStackPanelCol0);
+            grid.Widgets.Add(verticalStackPanelCol1);
+            grid.Widgets.Add(verticalStackPanelCol2);
+
+            var footerLabel = new Label
+            {
+                Text = "Press .ESC. to Return Menu!",
+                TextColor = Color.Black,
+                Font = SnakeSurvivalGameHelper.SerpensRegularTTFFontSystem.GetFont(25),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Padding = new Myra.Graphics2D.Thickness(0, 40),
+                GridColumnSpan = 3,
+                GridRow = 2
+            };
+
+            grid.Widgets.Add(footerLabel);
 
             _desktop.Root = grid;
         }

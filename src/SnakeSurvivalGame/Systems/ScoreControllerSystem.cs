@@ -22,15 +22,15 @@ namespace SnakeSurvivalGame.Systems
         public void LoadContent()
         {
             var scoreText = string.Format(scoreFormatText, Score);
-            _scoreTextComponent = new TextComponent(Scene.GetGameFont("Score"), scoreText, color: Color.Black, layerDepth: 1f);
-            Scene.CreateEntity("score")
-                .SetPosition(new Vector2(Scene.ScreenCenter.X * 1.5f, SnakeSurvivalGameHelper.PixelSize * 25.8f))
-                .AddComponent(_scoreTextComponent);
+            _scoreTextComponent = new TextComponent(Scene.GetGameFont("Score"), scoreText, color: Color.Black, layerDepth: 1f)
+            {
+                Position = new Vector2(Scene.ScreenCenter.X * 1.5f, SnakeSurvivalGameHelper.PixelSize * 25.8f)
+            };
 
-            var scoreBarTexture = Scene.GameCore.GraphicsDevice.CreateTextureRectangle(Scene.ScreenWidth, SnakeSurvivalGameHelper.PixelSize * 2f, Color.Gray * 0.1f);
-            Scene.CreateEntity("scoreBar")
-                .SetPosition(Scene.ScreenCenter.X, Scene.ScreenHeight - SnakeSurvivalGameHelper.PixelSize)
-                .AddComponent(new SpriteComponent(scoreBarTexture, drawInUICamera: true));
+            var scoreTexture = Scene.GameCore.GraphicsDevice.CreateTextureRectangle(Scene.ScreenWidth, SnakeSurvivalGameHelper.PixelSize * 2f, Color.Gray * 0.5f);
+            Scene.CreateEntity("score", Scene.ScreenCenter.X, Scene.ScreenHeight - SnakeSurvivalGameHelper.PixelSize)
+                .AddComponent(new SpriteComponent(scoreTexture))
+                .AddComponent(_scoreTextComponent);
         }
 
         public void ChangeScore(object sender, EventArgs e)

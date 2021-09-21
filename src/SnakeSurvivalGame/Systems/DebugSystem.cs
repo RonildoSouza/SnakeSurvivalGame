@@ -27,8 +27,7 @@ namespace SnakeSurvivalGame.Systems
         {
             _debugTextComponent = new TextComponent(Scene.GetGameFont("Debug"), string.Empty, color: Color.Yellow, layerDepth: 1f);
 
-            _debugEntity = Scene.CreateEntity("debug")
-                .SetPosition(new Vector2(120f, 120f))
+            _debugEntity = Scene.CreateEntity("debug", new Vector2(120f, 120f), isCollidable: false)
                 .AddComponent(_debugTextComponent);
 
             _lineGridComponent = new LineGridComponent(Scene.GameCore, new Vector2(24), Color.Red * 0.3f);
@@ -49,7 +48,7 @@ namespace SnakeSurvivalGame.Systems
 
                 _debugTextComponent.Text = $"***DEBUG PANEL***" +
                                            $"\nSnake Size: {totalSnakeParts}" +
-                                           $"\nFruit Position: {fruitEntity?.Transform.Position}";
+                                           $"\nFruit Position: {fruitEntity?.Position}";
 
                 _debugEntity.SetPositionY(_debugTextComponent.TextSize.Y);
 

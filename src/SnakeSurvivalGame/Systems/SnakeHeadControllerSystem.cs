@@ -7,9 +7,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using SnakeSurvivalGame.Components;
 using SnakeSurvivalGame.Helpers;
+using SnakeSurvivalGame.Infrastructure;
 using SnakeSurvivalGame.Scenes;
 using System;
-using System.Linq;
+using System.Threading;
 
 namespace SnakeSurvivalGame.Systems
 {
@@ -22,23 +23,32 @@ namespace SnakeSurvivalGame.Systems
         readonly TimeSpan _snakeSpeed = TimeSpan.FromMilliseconds(100);
         bool _start;
         Entity _youDieEntity;
+        Lazy<RankingService> _rankingService;
 
         public void LoadContent()
         {
             var spriteFont = Scene.GetGameFont("MainText");
-            var startBackgroundEntity = Scene.CreateEntity($"{nameof(_start)}Background")
-                .SetPosition(Scene.ScreenCenter)
-                .AddComponent(new SpriteComponent(Scene.GameCore.GraphicsDevice.CreateTextureRectangle(Scene.ScreenSize, Color.Gray * 0.8f), layerDepth: .9f));
+            var spriteComponent = new SpriteComponent(Scene.GameCore.GraphicsDevice.CreateTextureRectangle(Scene.ScreenSize, Color.Gray * 0.7f), layerDepth: .9f);
 
-            Scene.CreateEntity(nameof(_start))
-                .SetPosition(Scene.ScreenCenter)
-                .AddComponent(new TextComponent(spriteFont, $"{Scene.Title}\n   Press\n   SPACE\n       to\n   Start!", color: Color.Black, drawInUICamera: false, layerDepth: 1f))
-                .AddChild(startBackgroundEntity);
+            Scene.CreateEntity($"{nameof(_start)}1", Scene.ScreenCenter, isCollidable: false)
+                .AddComponent(spriteComponent)
+                .AddComponent(new TextComponent(spriteFont, $"{Scene.Title}", color: Color.Black, drawInUICamera: false, layerDepth: 1f)
+                {
+                    Position = new Vector2(Scene.ScreenCenter.X, Scene.ScreenCenter.Y * 1.1f)
+                });
 
-            _youDieEntity = Scene.CreateEntity(nameof(_youDieEntity))
-                .SetPosition(Scene.ScreenCenter)
+            Scene.CreateEntity($"{nameof(_start)}2", Scene.ScreenCenter, isCollidable: false)
+                .AddComponent(spriteComponent)
+                .AddComponent(new TextComponent(spriteFont, "Press .SPACE. to Start!", color: Color.Black, drawInUICamera: false, layerDepth: 1f, scale: new Vector2(0.4f))
+                {
+                    Position = new Vector2(Scene.ScreenCenter.X, Scene.ScreenCenter.Y * 0.9f)
+                });
+
+            _youDieEntity = Scene.CreateEntity(nameof(_youDieEntity), Scene.ScreenCenter, isCollidable: false)
                 .AddComponent(new TextComponent(spriteFont, $"YOU DIE!", color: Color.Red, drawInUICamera: false, layerDepth: 1f))
                 .SetActive(false);
+
+            _rankingService = new Lazy<RankingService>(new RankingService(Scene));
         }
 
         public void Update()
@@ -46,13 +56,28 @@ namespace SnakeSurvivalGame.Systems
             var keyboardState = Keyboard.GetState();
 
             if (!_start && keyboardState.IsKeyDown(Keys.Space) && !_oldKeyboardState.IsKeyDown(Keys.Space))
-            {
                 _start = true;
-                Scene.RemoveEntity(nameof(_start));
-            }
 
             if (!_start)
                 return;
+
+            if (_start && Scene.ExistsEntities(_ => _.UniqueId == $"{nameof(_start)}1" || _.UniqueId == $"{nameof(_start)}2"))
+            {
+                Scene.RemoveEntity($"{nameof(_start)}1");
+                Scene.RemoveEntity($"{nameof(_start)}2");
+            }
+
+            // YOU DIE!
+            if (_youDieEntity.Active)
+            {
+                var canRegisterScore = ScoreControllerSystem.Score > _rankingService.Value.GetMinPlayerScore();
+
+                Thread.Sleep(3000);
+                Scene.PauseUpdatableSystems = true;
+                Scene.GameCore.SetScene(new RankingScene(canRegisterScore));
+
+                return;
+            }
 
             var snakeHeadEntity = Scene.GetEntity(SnakeSurvivalGameHelper.SnakeHeadId);
             var snakePartComponentSnakeHead = snakeHeadEntity.GetComponent<SnakePartComponent>();
@@ -85,41 +110,30 @@ namespace SnakeSurvivalGame.Systems
             if (_sleepTime >= _snakeSpeed)
             {
                 snakePartComponentSnakeHead.SetDirection(direction);
-                snakePartComponentSnakeHead.LastPosition = snakeHeadEntity.Transform.Position;
+                snakePartComponentSnakeHead.LastPosition = snakeHeadEntity.Position;
 
-                var position = snakeHeadEntity.Transform.Position + direction;
+                var position = snakeHeadEntity.Position + direction;
                 snakeHeadEntity.SetPosition(position);
 
-                // Get snake part positions
-                var snakePartPositions = Scene
-                    .GetEntities(_ => MatchComponents(_) && _.UniqueId.StartsWith(SnakeSurvivalGameHelper.SnakePartIdPrefix))
-                    .Select(_ => _.Transform.Position);
-
-                var snakeBlockPositions = Scene
-                    .GetEntities(SnakeSurvivalGameHelper.BlockGroupName)
-                    .Select(_ => _.Transform.Position);
-
-                // YOU DIE!
-                if (snakePartPositions.Any(_ => Vector2.Distance(_, snakeHeadEntity.Transform.Position) <= 0f)
-                    || Scene.PositionIntersectWithAnyBlockEntity(snakeHeadEntity.Transform.Position))
+                // YOU DIE?
+                if (snakeHeadEntity.IsCollidedWithAny(Scene, SnakeSurvivalGameHelper.SnakeGroupName)
+                    || snakeHeadEntity.IsCollidedWithAny(Scene, SnakeSurvivalGameHelper.BlockGroupName))
                 {
                     _youDieEntity.SetActive(true);
-                    Scene.PauseUpdatableSystems = true;
-                    Scene.GameCore.SetScene(new RankingScene(true));
                 }
 
                 #region Out of screen
-                if (snakeHeadEntity.Transform.Position.X > Scene.ScreenWidth)
-                    snakeHeadEntity.SetPosition(SnakeSurvivalGameHelper.PixelSizeHalf, snakeHeadEntity.Transform.Position.Y);
+                if (snakeHeadEntity.Position.X > Scene.ScreenWidth)
+                    snakeHeadEntity.SetPosition(SnakeSurvivalGameHelper.PixelSizeHalf, snakeHeadEntity.Position.Y);
 
-                if (snakeHeadEntity.Transform.Position.X <= -SnakeSurvivalGameHelper.PixelSizeHalf)
-                    snakeHeadEntity.SetPosition(Scene.ScreenWidth - SnakeSurvivalGameHelper.PixelSizeHalf, snakeHeadEntity.Transform.Position.Y);
+                if (snakeHeadEntity.Position.X <= -SnakeSurvivalGameHelper.PixelSizeHalf)
+                    snakeHeadEntity.SetPosition(Scene.ScreenWidth - SnakeSurvivalGameHelper.PixelSizeHalf, snakeHeadEntity.Position.Y);
 
-                if (snakeHeadEntity.Transform.Position.Y > (Scene.ScreenHeight - SnakeSurvivalGameHelper.PixelSize * 2))
-                    snakeHeadEntity.SetPosition(snakeHeadEntity.Transform.Position.X, SnakeSurvivalGameHelper.PixelSizeHalf);
+                if (snakeHeadEntity.Position.Y > (Scene.ScreenHeight - SnakeSurvivalGameHelper.PixelSize * 2))
+                    snakeHeadEntity.SetPosition(snakeHeadEntity.Position.X, SnakeSurvivalGameHelper.PixelSizeHalf);
 
-                if (snakeHeadEntity.Transform.Position.Y <= -SnakeSurvivalGameHelper.PixelSizeHalf)
-                    snakeHeadEntity.SetPosition(snakeHeadEntity.Transform.Position.X, Scene.ScreenHeight - SnakeSurvivalGameHelper.PixelSize * 2.5f);
+                if (snakeHeadEntity.Position.Y <= -SnakeSurvivalGameHelper.PixelSizeHalf)
+                    snakeHeadEntity.SetPosition(snakeHeadEntity.Position.X, Scene.ScreenHeight - SnakeSurvivalGameHelper.PixelSize * 2.5f);
                 #endregion
 
                 _sleepTime = TimeSpan.Zero;

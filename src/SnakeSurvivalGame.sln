@@ -5,12 +5,6 @@ VisualStudioVersion = 16.0.30128.74
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SnakeSurvivalGame", "SnakeSurvivalGame\SnakeSurvivalGame.csproj", "{A5B8E054-229B-4BD5-9C90-D572EE376BD0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{6417AD44-9A97-4834-827D-FA5402FBA50B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curupira2D", "..\..\Curupira2D\src\Curupira2D\Curupira2D.csproj", "{2B1CF363-D9C6-4564-8574-697AB961D2EC}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curupira2D.GameComponents", "..\..\Curupira2D\src\Curupira2D.GameComponents\Curupira2D.GameComponents.csproj", "{475923B4-07BB-4931-A9C1-FE1A1D0777C1}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,21 +15,9 @@ Global
 		{A5B8E054-229B-4BD5-9C90-D572EE376BD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5B8E054-229B-4BD5-9C90-D572EE376BD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5B8E054-229B-4BD5-9C90-D572EE376BD0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2B1CF363-D9C6-4564-8574-697AB961D2EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2B1CF363-D9C6-4564-8574-697AB961D2EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2B1CF363-D9C6-4564-8574-697AB961D2EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2B1CF363-D9C6-4564-8574-697AB961D2EC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{475923B4-07BB-4931-A9C1-FE1A1D0777C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{475923B4-07BB-4931-A9C1-FE1A1D0777C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{475923B4-07BB-4931-A9C1-FE1A1D0777C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{475923B4-07BB-4931-A9C1-FE1A1D0777C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{2B1CF363-D9C6-4564-8574-697AB961D2EC} = {6417AD44-9A97-4834-827D-FA5402FBA50B}
-		{475923B4-07BB-4931-A9C1-FE1A1D0777C1} = {6417AD44-9A97-4834-827D-FA5402FBA50B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A20996FA-A358-4D63-AC8C-86EFB7E2A477}

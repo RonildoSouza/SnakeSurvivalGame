@@ -14,7 +14,7 @@ namespace SnakeSurvivalGame.Systems
             var serpensRegularTTFData = File.ReadAllBytes($"{Scene.GameCore.Content.RootDirectory}/Fonts/SerpensRegular.ttf");
 
             SnakeSurvivalGameHelper.SetSnakeSurvivalGameTextures(SnakeSurvivalGameTextures);
-            SnakeSurvivalGameHelper.SetSerpensRegularTTFData(Scene, serpensRegularTTFData);
+            SnakeSurvivalGameHelper.SetSerpensRegularTTFData(serpensRegularTTFData);
         }
     }
 }

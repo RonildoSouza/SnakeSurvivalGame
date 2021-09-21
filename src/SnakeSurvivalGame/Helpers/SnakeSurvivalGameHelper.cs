@@ -5,8 +5,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SnakeSurvivalGame.Components;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SnakeSurvivalGame.Helpers
 {
@@ -25,8 +23,6 @@ namespace SnakeSurvivalGame.Helpers
         internal static Vector2 RightDirection => new Vector2(PixelSize, 0f);
         internal static Vector2 DownDirection => new Vector2(0f, -PixelSize);
 
-        static IEnumerable<Vector2> _blockEntityPositions;
-
         internal static Texture2D SnakeSurvivalGameTextures { get; private set; }
         internal static Texture2D MouseCursorTextures { get; private set; }
         internal static byte[] SerpensRegularTTFData { get; private set; }
@@ -34,11 +30,11 @@ namespace SnakeSurvivalGame.Helpers
 
         internal static void SetSnakeSurvivalGameTextures(Texture2D gameTextures) => SnakeSurvivalGameTextures = gameTextures;
 
-        internal static void SetSerpensRegularTTFData(Scene scene, byte[] serpensRegularTTFData)
+        internal static void SetSerpensRegularTTFData(byte[] serpensRegularTTFData)
         {
             SerpensRegularTTFData = serpensRegularTTFData;
 
-            SerpensRegularTTFFontSystem = FontSystemFactory.Create(scene.GameCore.GraphicsDevice);
+            SerpensRegularTTFFontSystem = new FontSystem();
             SerpensRegularTTFFontSystem.AddFont(SerpensRegularTTFData);
         }
 
@@ -55,8 +51,6 @@ namespace SnakeSurvivalGame.Helpers
             };
         }
 
-        internal static void CleanBlockEntityPositions() => _blockEntityPositions = null;
-
         #region Extension Methods
         internal static Entity CreateSnakePart(this Scene scene)
         {
@@ -67,26 +61,9 @@ namespace SnakeSurvivalGame.Helpers
             var nextIndexSnakePart = snakeEntityParts.Count;
 
             var snakeTailSource = GetSnakeTextureSource(SnakeTexture.Body);
-            return scene.CreateEntity($"{SnakePartIdPrefix}{nextIndexSnakePart}", SnakeGroupName)
+            return scene.CreateEntity($"{SnakePartIdPrefix}{nextIndexSnakePart}", new Vector2(-PixelSize), SnakeGroupName)
                 .AddComponent(new SpriteComponent(SnakeSurvivalGameTextures, sourceRectangle: snakeTailSource))
-                .AddComponent(new SnakePartComponent(Vector2.Zero, Vector2.Zero))
-                .SetPosition(new Vector2(-PixelSize));
-        }
-
-        internal static bool PositionIntersectWithAnyBlockEntity(this Scene scene, Vector2 position)
-        {
-            if (_blockEntityPositions == null || !_blockEntityPositions.Any())
-                _blockEntityPositions = scene.GetEntities(BlockGroupName).Select(_ => _.Transform.Position);
-
-            return _blockEntityPositions.Any(_ =>
-            {
-                var blockRectangle = new Rectangle(_.ToPoint(), new Point((int)(PixelSize * 3f)));
-                blockRectangle.Offset(-PixelSize, -PixelSize);
-
-                var otherRectangle = new Rectangle(position.ToPoint(), new Point((int)PixelSize));
-
-                return otherRectangle.Intersects(blockRectangle);
-            });
+                .AddComponent(new SnakePartComponent(Vector2.Zero, Vector2.Zero));
         }
 
         internal static SpriteFont GetGameFont(this Scene scene, string fontName)

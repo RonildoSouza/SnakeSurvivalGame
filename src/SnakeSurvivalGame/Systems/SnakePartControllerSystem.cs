@@ -18,14 +18,14 @@ namespace SnakeSurvivalGame.Systems
             {
                 var snakePartComponentParent = snakePartEntity.Parent.GetComponent<SnakePartComponent>();
 
-                if (snakePartEntity.Transform.Position != snakePartComponentParent.LastPosition)
+                if (snakePartEntity.Position != snakePartComponentParent.LastPosition)
                 {
                     var snakeSpriteComponentSnakePart = snakePartEntity.GetComponent<SpriteComponent>();
                     var snakePartComponentSnakePart = snakePartEntity.GetComponent<SnakePartComponent>();
                     var position = snakePartComponentParent.LastPosition;
 
                     snakePartComponentSnakePart.SetDirection(snakePartComponentParent.NewDirection);
-                    snakePartComponentSnakePart.LastPosition = snakePartEntity.Transform.Position;
+                    snakePartComponentSnakePart.LastPosition = snakePartEntity.Position;
                     snakePartEntity.SetPosition(position);
                 }
             }

@@ -32,8 +32,7 @@ namespace SnakeSurvivalGame.Systems
             var startPosition = new Vector2(SnakeSurvivalGameHelper.PixelSize * 4.5f, SnakeSurvivalGameHelper.PixelSize * 23.5f);
             var lastPosition = startPosition - new Vector2(SnakeSurvivalGameHelper.PixelSize, 0f);
 
-            return Scene.CreateEntity(SnakeSurvivalGameHelper.SnakeHeadId, SnakeSurvivalGameHelper.SnakeGroupName)
-                .SetPosition(startPosition)
+            return Scene.CreateEntity(SnakeSurvivalGameHelper.SnakeHeadId, startPosition, SnakeSurvivalGameHelper.SnakeGroupName)
                 .AddComponent(new SpriteComponent(SnakeSurvivalGameHelper.SnakeSurvivalGameTextures, sourceRectangle: snakeHeadSource))
                 .AddComponent(new SnakePartComponent(lastPosition, SnakeSurvivalGameHelper.RightDirection));
         }

@@ -57,6 +57,9 @@ namespace SnakeSurvivalGame.Infrastructure
             return _rankings.OrderByDescending(_ => _.PlayerScore).Take(MaxRankings).ToList();
         }
 
+        public int GetMinPlayerScore()
+            => GetAll().Select(_ => _.PlayerScore).LastOrDefault();
+
         /// <summary>
         /// THIS IS NOT THE BETTER SOLUTION TO SAVE REGISTERS, BUT TO A SIMPLE GAME IT'S OK
         /// </summary>
