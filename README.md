@@ -1,4 +1,15 @@
-# Snake Survival Game
+# [Snake Survival Game](https://ronildo-souza.itch.io/snake-survival-game)
+
+Snake Survival Game was developed with the objective of learning and sharing knowledge.
+
+## Techniques and Tools Used
+- ECS
+- Scene Graph
+- Monogame
+- Myra
+- Curupira2D
+
+## Screenshots
 
 |                                        |        |                   |
 |:--------------------------------------------:|:--------------------------------------------:|:--------------------------------------------:|
