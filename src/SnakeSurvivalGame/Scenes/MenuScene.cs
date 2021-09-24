@@ -1,6 +1,7 @@
 ﻿using Curupira2D.ECS;
 using Microsoft.Xna.Framework;
 using Myra.Graphics2D.Brushes;
+using Myra.Graphics2D.TextureAtlases;
 using Myra.Graphics2D.UI;
 using SnakeSurvivalGame.Helpers;
 using SnakeSurvivalGame.Infrastructure;
@@ -32,6 +33,7 @@ namespace SnakeSurvivalGame.Scenes
                     GameCore.SetScene<GameSceneLevel01>();
                     GameCore.IsMouseVisible = false;
                 }),
+                ("Controls", () => { ShowControlsDialog(); }),
                 ("Ranking", () => { GameCore.SetScene(new RankingScene()); }),
                 ("License", () => { ShowLicenseDialog(); }),
                 ("Quit", () =>{ this.ShowQuitConfirmDialog(noAction: null, desktop: _desktop); }),
@@ -61,6 +63,18 @@ namespace SnakeSurvivalGame.Scenes
 
             var verticalStackPanel = new VerticalStackPanel();
 
+            var headerLabel = new Label
+            {
+                Text = "License",
+                TextColor = Color.White,
+                Font = SnakeSurvivalGameHelper.SerpensRegularTTFFontSystem.GetFont(32),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Top,
+                Padding = new Myra.Graphics2D.Thickness(0, 10)
+            };
+
+            verticalStackPanel.Widgets.Add(headerLabel);
+
             foreach (var softwareLicense in SoftwareLicenseService.GetAll())
             {
                 var titleLabel = new Label
@@ -88,6 +102,53 @@ namespace SnakeSurvivalGame.Scenes
             };
 
             dialog.Content = scrollViewer;
+            dialog.Content.Margin = new Myra.Graphics2D.Thickness(10, 10);
+            dialog.Content.VerticalAlignment = VerticalAlignment.Center;
+
+            dialog.ShowModal(_desktop);
+        }
+
+        void ShowControlsDialog()
+        {
+            var dialog = new Dialog
+            {
+                Width = ScreenWidth,
+                Height = ScreenHeight,
+                DragDirection = DragDirection.None,
+            };
+
+            dialog.ButtonOk.Visible = false;
+            dialog.ButtonCancel.Visible = false;
+            dialog.CloseButton.Visible = true;
+
+            var verticalStackPanel = new VerticalStackPanel()
+            {
+                Width = ScreenWidth,
+                Height = ScreenHeight,
+            };
+
+            var headerLabel = new Label
+            {
+                Text = "Controls",
+                TextColor = Color.White,
+                Font = SnakeSurvivalGameHelper.SerpensRegularTTFFontSystem.GetFont(32),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Top,
+                Padding = new Myra.Graphics2D.Thickness(0, 10)
+            };
+
+            var image = new Image
+            {
+                Renderable = new TextureRegion(SnakeSurvivalGameHelper.ControlsTexture),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Padding = new Myra.Graphics2D.Thickness(0, 100)
+            };
+
+            verticalStackPanel.Widgets.Add(headerLabel);
+            verticalStackPanel.Widgets.Add(image);
+
+            dialog.Content = verticalStackPanel;
             dialog.Content.Margin = new Myra.Graphics2D.Thickness(10, 10);
             dialog.Content.VerticalAlignment = VerticalAlignment.Center;
 

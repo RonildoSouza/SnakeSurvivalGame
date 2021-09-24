@@ -7,7 +7,6 @@ using Microsoft.Xna.Framework;
 using SnakeSurvivalGame.Helpers;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SnakeSurvivalGame.Systems
 {

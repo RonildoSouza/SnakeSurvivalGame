@@ -12,7 +12,6 @@ namespace SnakeSurvivalGame.Systems
     [RequiredComponent(typeof(ScoreControllerSystem), typeof(TextComponent))]
     public sealed class ScoreControllerSystem : Curupira2D.ECS.System, ILoadable
     {
-        const string scoreFormatText = "Score: {0}";
         TextComponent _scoreTextComponent;
 
         public static int Score { get; private set; } = 0;
@@ -21,10 +20,9 @@ namespace SnakeSurvivalGame.Systems
 
         public void LoadContent()
         {
-            var scoreText = string.Format(scoreFormatText, Score);
-            _scoreTextComponent = new TextComponent(Scene.GetGameFont("Score"), scoreText, color: Color.Black, layerDepth: 1f)
+            _scoreTextComponent = new TextComponent(SnakeSurvivalGameHelper.ScoreFont, GetScoreText(), color: Color.Black, layerDepth: 1f)
             {
-                Position = new Vector2(Scene.ScreenCenter.X * 1.5f, SnakeSurvivalGameHelper.PixelSize * 25.8f)
+                Position = new Vector2(Scene.ScreenCenter.X * 1.35f, SnakeSurvivalGameHelper.PixelSize * 25.8f)
             };
 
             var scoreTexture = Scene.GameCore.GraphicsDevice.CreateTextureRectangle(Scene.ScreenWidth, SnakeSurvivalGameHelper.PixelSize * 2f, Color.Gray * 0.5f);
@@ -36,14 +34,13 @@ namespace SnakeSurvivalGame.Systems
         public void ChangeScore(object sender, EventArgs e)
         {
             Score += 50;
-            var scoreText = string.Format(scoreFormatText, Score);
-
-            _scoreTextComponent.Text = scoreText;
-
+            _scoreTextComponent.Text = GetScoreText();
             ScoreChange?.Invoke(this, new ScoreChangeEventArgs(Score));
         }
 
         internal static void CleanScore() => Score = 0;
+
+        private static string GetScoreText() => string.Format("Score: {0}", $"{Score}".PadLeft(6, '0'));
     }
 
     public class ScoreChangeEventArgs : EventArgs

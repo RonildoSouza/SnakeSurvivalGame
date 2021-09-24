@@ -18,18 +18,27 @@ namespace SnakeSurvivalGame.Helpers
 
         static void ShowConfirmDialog(this Scene scene, string title, string message, Action yesAction, Action noAction, Desktop desktop)
         {
-            var dialog = Dialog.CreateMessageBox(title, message);
+            var messageLabel = new Label
+            {
+                Text = message,
+                Font = SnakeSurvivalGameHelper.FreePixelTTFFontSystem.GetFont(20),
+                Wrap = true
+            };
+
+            var dialog = Dialog.CreateMessageBox(title, messageLabel);
             dialog.ButtonOk.Text = "Yes";
             dialog.ButtonOk.Width = 100;
             dialog.ButtonOk.Height = 30;
             dialog.ButtonOk.ContentHorizontalAlignment = HorizontalAlignment.Center;
             dialog.ButtonOk.ContentVerticalAlignment = VerticalAlignment.Center;
+            dialog.ButtonOk.Font = SnakeSurvivalGameHelper.FreePixelTTFFontSystem.GetFont(20);
 
             dialog.ButtonCancel.Text = "No";
             dialog.ButtonCancel.Width = 100;
             dialog.ButtonCancel.Height = 30;
             dialog.ButtonCancel.ContentHorizontalAlignment = HorizontalAlignment.Center;
             dialog.ButtonCancel.ContentVerticalAlignment = VerticalAlignment.Center;
+            dialog.ButtonCancel.Font = SnakeSurvivalGameHelper.FreePixelTTFFontSystem.GetFont(20);
 
             dialog.CloseButton.Visible = false;
             dialog.Width = Convert.ToInt32(scene.ScreenWidth * 0.8f);
@@ -38,6 +47,7 @@ namespace SnakeSurvivalGame.Helpers
             dialog.Content.Margin = new Myra.Graphics2D.Thickness(10, 10);
             dialog.Content.VerticalAlignment = VerticalAlignment.Center;
             dialog.DragDirection = DragDirection.None;
+            dialog.TitleFont = SnakeSurvivalGameHelper.FreePixelTTFFontSystem.GetFont(20);
 
             dialog.Closed += (s, a) =>
             {
@@ -97,6 +107,7 @@ namespace SnakeSurvivalGame.Helpers
                 VerticalAlignment = VerticalAlignment.Bottom,
                 Left = -10,
                 Top = -10,
+                Font = SnakeSurvivalGameHelper.FreePixelTTFFontSystem.GetFont(12)
             };
 
             var panel = new Panel

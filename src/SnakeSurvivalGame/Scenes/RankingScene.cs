@@ -14,14 +14,14 @@ namespace SnakeSurvivalGame.Scenes
     {
         // Myra
         Desktop _desktop;
-        bool _showInputNameDialog;
+        bool _canShowInputNameDialog;
         DynamicSpriteFont _dynamicSpriteFont;
 
         RankingService _rankingService;
 
-        public RankingScene(bool showInputNameDialog = false)
+        public RankingScene(bool canShowInputNameDialog = false)
         {
-            _showInputNameDialog = showInputNameDialog && ScoreControllerSystem.Score > 0;
+            _canShowInputNameDialog = canShowInputNameDialog;
         }
 
         public override void LoadContent()
@@ -31,7 +31,7 @@ namespace SnakeSurvivalGame.Scenes
             _desktop = new Desktop();
             _dynamicSpriteFont = SnakeSurvivalGameHelper.SerpensRegularTTFFontSystem.GetFont(20);
 
-            if (_showInputNameDialog)
+            if (_canShowInputNameDialog)
                 ShowInputNameDialog();
             else
                 RankingGridBuilder();
@@ -43,7 +43,7 @@ namespace SnakeSurvivalGame.Scenes
         {
             KeyboardInputManager.Begin();
 
-            if (!_showInputNameDialog && KeyboardInputManager.IsKeyPressed(Keys.Escape))
+            if (!_canShowInputNameDialog && KeyboardInputManager.IsKeyPressed(Keys.Escape))
                 GameCore.SetScene<MenuScene>();
 
             base.Update(gameTime);
@@ -67,7 +67,8 @@ namespace SnakeSurvivalGame.Scenes
             {
                 HintText = "Enter your name here!",
                 Height = 50,
-                TextVerticalAlignment = VerticalAlignment.Center
+                TextVerticalAlignment = VerticalAlignment.Center,
+                Font = SnakeSurvivalGameHelper.FreePixelTTFFontSystem.GetFont(20)
             };
 
             horizontalStackPanel.Widgets.Add(playerNameTextBox);
@@ -76,7 +77,8 @@ namespace SnakeSurvivalGame.Scenes
             var inputNameDialog = new Dialog
             {
                 Title = $"Your Score: {ScoreControllerSystem.Score}",
-                Content = horizontalStackPanel
+                Content = horizontalStackPanel,
+                TitleFont = SnakeSurvivalGameHelper.FreePixelTTFFontSystem.GetFont(20)
             };
 
             inputNameDialog.ButtonOk.Text = "Save";
@@ -84,6 +86,7 @@ namespace SnakeSurvivalGame.Scenes
             inputNameDialog.ButtonOk.Height = 30;
             inputNameDialog.ButtonOk.ContentHorizontalAlignment = HorizontalAlignment.Center;
             inputNameDialog.ButtonOk.ContentVerticalAlignment = VerticalAlignment.Center;
+            inputNameDialog.ButtonOk.Font = SnakeSurvivalGameHelper.FreePixelTTFFontSystem.GetFont(20);
 
             inputNameDialog.ButtonCancel.Visible = false;
             inputNameDialog.CloseButton.Visible = false;
@@ -104,7 +107,7 @@ namespace SnakeSurvivalGame.Scenes
                     return;
                 }
 
-                _showInputNameDialog = false;
+                _canShowInputNameDialog = false;
                 _rankingService.Add(playerNameTextBox.Text.Trim(), ScoreControllerSystem.Score);
 
                 ScoreControllerSystem.CleanScore();
@@ -180,9 +183,9 @@ namespace SnakeSurvivalGame.Scenes
 
             var footerLabel = new Label
             {
-                Text = "Press .ESC. to Return Menu!",
+                Text = "Press [ESC] to Return Menu!",
                 TextColor = Color.Black,
-                Font = SnakeSurvivalGameHelper.SerpensRegularTTFFontSystem.GetFont(25),
+                Font = SnakeSurvivalGameHelper.FreePixelTTFFontSystem.GetFont(22),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Bottom,
                 Padding = new Myra.Graphics2D.Thickness(0, 40),

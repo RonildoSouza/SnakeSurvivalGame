@@ -10,11 +10,12 @@ namespace SnakeSurvivalGame.Systems
     {
         public void LoadContent()
         {
-            var SnakeSurvivalGameTextures = Scene.GameCore.Content.Load<Texture2D>("Textures/SnakeSurvivalGame");
-            var serpensRegularTTFData = File.ReadAllBytes($"{Scene.GameCore.Content.RootDirectory}/Fonts/SerpensRegular.ttf");
-
-            SnakeSurvivalGameHelper.SetSnakeSurvivalGameTextures(SnakeSurvivalGameTextures);
-            SnakeSurvivalGameHelper.SetSerpensRegularTTFData(serpensRegularTTFData);
+            SnakeSurvivalGameHelper.SetSnakeSurvivalGameTextures(Scene.GameCore.Content.Load<Texture2D>("Textures/SnakeSurvivalGame"));
+            SnakeSurvivalGameHelper.SetControlsTexture(Scene.GameCore.Content.Load<Texture2D>("Textures/Controls"));
+            SnakeSurvivalGameHelper.SetSerpensRegularTTFData(File.ReadAllBytes($"{Scene.GameCore.Content.RootDirectory}/Fonts/SerpensRegular.ttf"));
+            SnakeSurvivalGameHelper.SetFreePixelTTFData(File.ReadAllBytes($"{Scene.GameCore.Content.RootDirectory}/Fonts/FreePixel.ttf"));
+            SnakeSurvivalGameHelper.SetMainFont(Scene.GameCore.Content.Load<SpriteFont>("Fonts/MainText"));
+            SnakeSurvivalGameHelper.SetScoreFont(Scene.GameCore.Content.Load<SpriteFont>("Fonts/Score"));
         }
     }
 }
