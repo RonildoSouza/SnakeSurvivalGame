@@ -25,7 +25,7 @@ namespace SnakeSurvivalGame.Systems
 
         public void LoadContent()
         {
-            _debugTextComponent = new TextComponent(Scene.GetGameFont("Debug"), string.Empty, color: Color.Yellow, layerDepth: 1f);
+            _debugTextComponent = new TextComponent(SnakeSurvivalGameHelper.ScoreFont, string.Empty, color: Color.Black, layerDepth: 1f, scale: new Vector2(0.5f));
 
             _debugEntity = Scene.CreateEntity("debug", new Vector2(120f, 120f), isCollidable: false)
                 .AddComponent(_debugTextComponent);
@@ -65,9 +65,7 @@ namespace SnakeSurvivalGame.Systems
         {
             if (Scene.KeyboardInputManager.IsKeyPressed(Keys.OemPlus))
             {
-                var gameSceneLevel = Scene as GameSceneLevelBase;
-
-                if (gameSceneLevel == null)
+                if (!(Scene is GameSceneLevelBase gameSceneLevel))
                     return;
 
                 _prevGameSceneLevels.Push(gameSceneLevel);

@@ -24,19 +24,31 @@ namespace SnakeSurvivalGame.Helpers
         internal static Vector2 DownDirection => new Vector2(0f, -PixelSize);
 
         internal static Texture2D SnakeSurvivalGameTextures { get; private set; }
-        internal static Texture2D MouseCursorTextures { get; private set; }
-        internal static byte[] SerpensRegularTTFData { get; private set; }
+        internal static Texture2D ControlsTexture { get; private set; }
         internal static FontSystem SerpensRegularTTFFontSystem { get; private set; }
+        internal static FontSystem FreePixelTTFFontSystem { get; private set; }
+        internal static SpriteFont MainTextFont { get; private set; }
+        internal static SpriteFont ScoreFont { get; private set; }
 
         internal static void SetSnakeSurvivalGameTextures(Texture2D gameTextures) => SnakeSurvivalGameTextures = gameTextures;
 
+        internal static void SetControlsTexture(Texture2D controlsTexture) => ControlsTexture = controlsTexture;
+
         internal static void SetSerpensRegularTTFData(byte[] serpensRegularTTFData)
         {
-            SerpensRegularTTFData = serpensRegularTTFData;
-
             SerpensRegularTTFFontSystem = new FontSystem();
-            SerpensRegularTTFFontSystem.AddFont(SerpensRegularTTFData);
+            SerpensRegularTTFFontSystem.AddFont(serpensRegularTTFData);
         }
+
+        internal static void SetFreePixelTTFData(byte[] freePixelTTFData)
+        {
+            FreePixelTTFFontSystem = new FontSystem();
+            FreePixelTTFFontSystem.AddFont(freePixelTTFData);
+        }
+
+        internal static void SetMainFont(SpriteFont spriteFont) => MainTextFont = spriteFont;
+
+        internal static void SetScoreFont(SpriteFont spriteFont) => ScoreFont = spriteFont;
 
         internal static Rectangle GetSnakeTextureSource(SnakeTexture snakeTexture)
         {
@@ -64,12 +76,6 @@ namespace SnakeSurvivalGame.Helpers
             return scene.CreateEntity($"{SnakePartIdPrefix}{nextIndexSnakePart}", new Vector2(-PixelSize), SnakeGroupName)
                 .AddComponent(new SpriteComponent(SnakeSurvivalGameTextures, sourceRectangle: snakeTailSource))
                 .AddComponent(new SnakePartComponent(Vector2.Zero, Vector2.Zero));
-        }
-
-        internal static SpriteFont GetGameFont(this Scene scene, string fontName)
-        {
-            var spriteFont = scene.GameCore.Content.Load<SpriteFont>($"Fonts/{fontName}");
-            return spriteFont;
         }
         #endregion
     }

@@ -27,6 +27,7 @@ namespace SnakeSurvivalGame.Scenes
         // Myra
         Desktop _desktop;
         bool _escapePressed;
+        string _fallbakTitle;
 
         public GameSceneLevelBase NextGameSceneLevel { get; private set; }
 
@@ -67,11 +68,12 @@ namespace SnakeSurvivalGame.Scenes
 
             _desktop = new Desktop { Root = menuOptions };
 
-            var spriteFont = this.GetGameFont("MainText");
             _nextLevelEntity = CreateEntity(nameof(_nextLevelEntity), ScreenCenter, isCollidable: false)
                 .AddComponent(new SpriteComponent(GameCore.GraphicsDevice.CreateTextureRectangle(ScreenSize, Color.Gray * 0.7f), layerDepth: .9f))
-                .AddComponent(new TextComponent(spriteFont, $"NEXT LEVEL...", color: Color.Black, drawInUICamera: false, layerDepth: 1f, scale: new Vector2(0.7f)))
+                .AddComponent(new TextComponent(SnakeSurvivalGameHelper.MainTextFont, $"NEXT LEVEL...", color: Color.Black, drawInUICamera: false, layerDepth: 1f, scale: new Vector2(0.7f)))
                 .SetActive(false);
+
+            _fallbakTitle = Title;
 
             base.LoadContent();
         }
@@ -79,6 +81,16 @@ namespace SnakeSurvivalGame.Scenes
         public override void Update(GameTime gameTime)
         {
             KeyboardInputManager.Begin();
+
+            if (KeyboardInputManager.IsKeyPressed(Keys.F2))
+            {
+                PauseUpdatableSystems = !PauseUpdatableSystems;
+
+                if (PauseUpdatableSystems)
+                    SetTitle($"{Title} *Screenshot Mode*");
+                else
+                    SetTitle(_fallbakTitle);
+            }
 
             if (_nextLevelEntity.Active)
             {

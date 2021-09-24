@@ -30,7 +30,7 @@
     <TrimmerRootAssembly Include="Microsoft.Xna.Framework.Content.ContentTypeReader" Visible="false" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Curupira2D" Version="1.0.0-beta.2" />
+    <PackageReference Include="Curupira2D" Version="1.0.0-beta.3" />
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
     <PackageReference Include="Myra" Version="1.3.2" />
@@ -48,6 +48,7 @@
   </ItemGroup>
 
   <Target Name="CopyCustomContent" AfterTargets="AfterBuild" Condition=" '$(Configuration)' == 'Release' ">
+    <Exec Command="del /S /F /Q ..\..\dist\*" ContinueOnError="false" />
     <Exec Command="xcopy $(OutputPath) ..\..\dist /S /F /I /R /Y" ContinueOnError="true" />
   </Target>
 </Project>

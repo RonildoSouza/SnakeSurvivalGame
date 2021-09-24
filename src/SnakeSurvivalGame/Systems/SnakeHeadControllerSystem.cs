@@ -27,25 +27,24 @@ namespace SnakeSurvivalGame.Systems
 
         public void LoadContent()
         {
-            var spriteFont = Scene.GetGameFont("MainText");
             var spriteComponent = new SpriteComponent(Scene.GameCore.GraphicsDevice.CreateTextureRectangle(Scene.ScreenSize, Color.Gray * 0.7f), layerDepth: .9f);
 
             Scene.CreateEntity($"{nameof(_start)}1", Scene.ScreenCenter, isCollidable: false)
                 .AddComponent(spriteComponent)
-                .AddComponent(new TextComponent(spriteFont, $"{Scene.Title}", color: Color.Black, drawInUICamera: false, layerDepth: 1f)
+                .AddComponent(new TextComponent(SnakeSurvivalGameHelper.MainTextFont, $"{Scene.Title}", color: Color.Black, drawInUICamera: false, layerDepth: 1f)
                 {
                     Position = new Vector2(Scene.ScreenCenter.X, Scene.ScreenCenter.Y * 1.1f)
                 });
 
             Scene.CreateEntity($"{nameof(_start)}2", Scene.ScreenCenter, isCollidable: false)
                 .AddComponent(spriteComponent)
-                .AddComponent(new TextComponent(spriteFont, "Press .SPACE. to Start!", color: Color.Black, drawInUICamera: false, layerDepth: 1f, scale: new Vector2(0.4f))
+                .AddComponent(new TextComponent(SnakeSurvivalGameHelper.ScoreFont, "Press [SPACE] to Start!", color: Color.Black, drawInUICamera: false, layerDepth: 1f, scale: new Vector2(0.9f))
                 {
                     Position = new Vector2(Scene.ScreenCenter.X, Scene.ScreenCenter.Y * 0.9f)
                 });
 
             _youDieEntity = Scene.CreateEntity(nameof(_youDieEntity), Scene.ScreenCenter, isCollidable: false)
-                .AddComponent(new TextComponent(spriteFont, $"YOU DIE!", color: Color.Red, drawInUICamera: false, layerDepth: 1f))
+                .AddComponent(new TextComponent(SnakeSurvivalGameHelper.MainTextFont, $"YOU DIE!", color: Color.Red, drawInUICamera: false, layerDepth: 1f))
                 .SetActive(false);
 
             _rankingService = new Lazy<RankingService>(new RankingService(Scene));
@@ -70,11 +69,11 @@ namespace SnakeSurvivalGame.Systems
             // YOU DIE!
             if (_youDieEntity.Active)
             {
-                var canRegisterScore = ScoreControllerSystem.Score > _rankingService.Value.GetMinPlayerScore();
+                var canShowInputNameDialog = ScoreControllerSystem.Score > 0 && ScoreControllerSystem.Score > _rankingService.Value.GetMinPlayerScore();
 
                 Thread.Sleep(3000);
                 Scene.PauseUpdatableSystems = true;
-                Scene.GameCore.SetScene(new RankingScene(canRegisterScore));
+                Scene.GameCore.SetScene(new RankingScene(canShowInputNameDialog));
 
                 return;
             }
