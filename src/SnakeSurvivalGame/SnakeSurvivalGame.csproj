@@ -56,6 +56,7 @@
   </ItemGroup>
 
   <Target Name="CopyCustomContent" AfterTargets="AfterBuild" Condition=" '$(Configuration)' == 'Release' ">
+    <Exec Command="mkdir ..\..\dist" ContinueOnError="true" />
     <Exec Command="del /S /F /Q ..\..\dist\*" ContinueOnError="false" />
     <Exec Command="xcopy $(OutputPath) ..\..\dist /S /F /I /R /Y" ContinueOnError="true" />
   </Target>
