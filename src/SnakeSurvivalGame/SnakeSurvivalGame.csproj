@@ -30,10 +30,18 @@
     <TrimmerRootAssembly Include="Microsoft.Xna.Framework.Content.ContentTypeReader" Visible="false" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Curupira2D" Version="1.0.0-beta.3" />
+    <PackageReference Include="Curupira2D" Version="1.0.0-beta.5" />
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
     <PackageReference Include="Myra" Version="1.3.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="C:\Users\ronil\.nuget\packages\curupira2d\1.0.0-beta.5\contentFiles\any\netstandard2.1\Content\DiagnosticsFont.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="C:\Users\ronil\.nuget\packages\curupira2d\1.0.0-beta.5\contentFiles\any\netstandard2.1\Content\FontArial18.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Update="Content\Fonts\FreePixel.ttf">

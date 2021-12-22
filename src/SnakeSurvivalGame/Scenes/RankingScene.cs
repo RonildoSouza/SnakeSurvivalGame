@@ -34,7 +34,10 @@ namespace SnakeSurvivalGame.Scenes
             if (_canShowInputNameDialog)
                 ShowInputNameDialog();
             else
+            {
+                ScoreControllerSystem.CleanScore();
                 RankingGridBuilder();
+            }
 
             base.LoadContent();
         }
