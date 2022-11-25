@@ -11,9 +11,7 @@ namespace SnakeSurvivalGame
                   width: 360,
                   height: 648,
 #if DEBUG
-                  debugActive: true,
-#else
-                  debugActive: false, 
+                  debugOptions: new Curupira2D.Diagnostics.DebugOptions { DebugActive = true },
 #endif
                   disabledExit: true)
         {
