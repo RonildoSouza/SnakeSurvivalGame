@@ -3,7 +3,7 @@
 Snake Survival Game was developed with the objective of learning and sharing knowledge.
 
 ## Game Instructions
-The game contains 10 levels and you move to the next level by accumulating 1000 points.
+The game contains 10 levels and you move to the next level by accumulating 1000 points per level.
 
 ## Techniques and Tools Used
 - ECS
