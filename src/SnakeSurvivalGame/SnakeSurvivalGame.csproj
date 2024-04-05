@@ -11,13 +11,23 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
     <Authors>Ronildo Souza</Authors>
     <PackageTags>Monogame, ECS</PackageTags>
-    <Version>1.0.1-beta</Version>
+    <Version>1.0.2-beta</Version>
     <RepositoryUrl>https://github.com/RonildoSouza/SnakeSurvivalGame</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
+    <Content Remove="C:\Users\Ronildo\.nuget\packages\curupira2d\2.0.0-beta.4\contentFiles\any\net6.0\Content\DiagnosticsFont.xnb" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Content\DiagnosticsFont.xnb" />
+    <None Remove="Content\FontArial18.xnb" />
     <None Remove="Icon.ico" />
     <None Remove="Icon.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\DiagnosticsFont.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\FontArial18.xnb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.ico" />
@@ -30,7 +40,8 @@
     <TrimmerRootAssembly Include="Microsoft.Xna.Framework.Content.ContentTypeReader" Visible="false" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Curupira2D" Version="2.0.0-beta.1" />
+    <PackageReference Include="Curupira2D" Version="2.0.0-beta.4" />
+    <PackageReference Include="Curupira2D.GameComponents" Version="1.0.0-beta.5" />
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
     <PackageReference Include="Myra" Version="1.4.5" />
